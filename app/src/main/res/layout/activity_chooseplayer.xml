@@ -6,12 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <ImageView
+        android:id="@+id/imageViewChoosePlayer"
+        android:layout_width="525dp"
+        android:layout_height="1021dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginTop="358dp"
-        android:text="Player Configuration Screen" />
+        android:layout_marginStart="-64dp"
+        android:layout_marginTop="-52dp"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="-121dp"
+        android:src="@drawable/chooseplayer" />
 
 </RelativeLayout>
