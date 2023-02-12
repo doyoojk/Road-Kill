@@ -11,15 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:layout_marginTop="49dp"
-        android:text="Game Main Screen" />
+        android:layout_marginTop="358dp"
+        android:text="Player Configuration Screen" />
 
-    <Button
-        android:id="@+id/game_start_button"
-        android:layout_width="163dp"
-        android:layout_height="58dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="160dp"
-        android:text="Start Game" />
 </RelativeLayout>
