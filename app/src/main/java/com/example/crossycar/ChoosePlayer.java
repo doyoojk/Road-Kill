@@ -47,6 +47,8 @@ public class ChoosePlayer extends AppCompatActivity {
                 if (playerName.isEmpty()) {
                     playerNameInput.setError("Name cannot be empty");
                     return;
+                } else if (playerName == null) {
+                    playerNameInput.setError("Name cannot be null");
                 }
 
                 // Determine the selected car
