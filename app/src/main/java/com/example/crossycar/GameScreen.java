@@ -9,9 +9,9 @@ import android.widget.TextView;
 public class GameScreen extends AppCompatActivity {
 
     private TextView playerNameView;
-    //private TextView carSelectionView;
-    //private ImageView[] difficulty = new ImageView[5];
+    private TextView scoreTextView;
     private ImageView[] heartIcons = new ImageView[5];
+    private int score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,7 @@ public class GameScreen extends AppCompatActivity {
         heartIcons[2] = findViewById(R.id.heart_icon_3);
         heartIcons[3] = findViewById(R.id.heart_icon_4);
         heartIcons[4] = findViewById(R.id.heart_icon_5);
+        scoreTextView = findViewById(R.id.score_text);
 
         // Get the data from the intent
         String playerName = getIntent().getStringExtra("player_name");
@@ -58,5 +59,8 @@ public class GameScreen extends AppCompatActivity {
         for (int i = heartCount; i < 5; i++) {
             heartIcons[i].setVisibility(ImageView.GONE);
         }
+
+        //setting score to 0 initially
+        scoreTextView.setText("Score: " + Integer.toString(score));
     }
 }

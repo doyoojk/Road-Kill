@@ -23,17 +23,10 @@ public class ChoosePlayer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chooseplayer);
 
-//        button = findViewById(R.id.choose_player_button);
         carSelectionGroup = findViewById(R.id.car_selection_group);
         difficultySelectionGroup = findViewById(R.id.difficulty_selection_group);
         playerNameInput = findViewById(R.id.player_name_input);
         saveButton = findViewById(R.id.save_button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openGameScreen();
-//            }
-//        });
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +60,7 @@ public class ChoosePlayer extends AppCompatActivity {
                     difficulty = "Hard";
                 }
 
-                // Start the PlayerDisplayActivity and pass the data
+                // Start the GameScreen and pass the data
                 Intent GameScreen = new Intent(ChoosePlayer.this, GameScreen.class);
                 GameScreen.putExtra("player_name", playerName);
                 GameScreen.putExtra("car_selection", carSelection);
@@ -77,11 +70,4 @@ public class ChoosePlayer extends AppCompatActivity {
         });
 
     }
-//    public void openGameScreen() {
-//        Intent GameScreen = new Intent(this, GameScreen.class);
-//        GameScreen.putExtra("player_name", playerName);
-//        GameScreen.putExtra("car_selection", carSelection);
-//        GameScreen.putExtra("difficulty", difficulty);
-//        startActivity(GameScreen);
-//    }
 }
