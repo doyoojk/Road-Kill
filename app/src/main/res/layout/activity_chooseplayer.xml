@@ -16,20 +16,155 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginStart="-62dp"
-        android:layout_marginTop="-52dp"
+        android:layout_marginTop="-53dp"
         android:layout_marginEnd="-52dp"
-        android:layout_marginBottom="-120dp"
+        android:layout_marginBottom="-119dp"
         android:src="@drawable/chooseplayer" />
 
-    <Button
-        android:id="@+id/choose_player_button"
-        android:layout_width="125dp"
+
+    <RadioGroup
+        android:id="@+id/car_selection_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="-7dp"
+        android:layout_marginTop="583dp"
+        android:layout_marginEnd="6dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/car_1"
+            android:layout_width="108dp"
+            android:layout_height="96dp"
+            android:drawableTop="@drawable/bmw" />
+
+        <RadioButton
+            android:id="@+id/car_2"
+            android:layout_width="108dp"
+            android:layout_height="96dp"
+            android:drawableTop="@drawable/tesla" />
+
+        <RadioButton
+            android:id="@+id/car_3"
+            android:layout_width="108dp"
+            android:layout_height="96dp"
+            android:drawableTop="@drawable/gwagon" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="144dp"
+        android:layout_marginBottom="239dp"
+        android:fontFamily="@font/alata"
+        android:text="Select Car:"
+        android:textColor="@color/yellow"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/player_name_input"
+        android:layout_width="255dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="94dp"
+        android:layout_marginTop="466dp"
+        android:inputType="text" />
+
+    <RadioGroup
+        android:id="@+id/difficulty_selection_group"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="142dp"
-        android:layout_marginBottom="49dp"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="377dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/difficulty_easy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/alata"
+            android:text="Easy"
+
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/difficulty_medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/alata"
+            android:text="Medium"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/difficulty_hard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/alata"
+            android:text="Hard"
+            android:textSize="16sp" />
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="343dp"
+        android:layout_marginEnd="132dp"
+        android:fontFamily="@font/alata"
+        android:text="Select Difficulty:"
+        android:textColor="@color/yellow"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="104dp"
+        android:layout_marginBottom="328dp"
+        android:text="Enter Player Name:"
+        android:textColor="@color/yellow"
+        android:textSize="20sp" />
+
+<!--    <Button-->
+<!--        android:id="@+id/choose_player_button"-->
+<!--        android:layout_width="141dp"-->
+<!--        android:layout_height="62dp"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginStart="232dp"-->
+<!--        android:layout_marginBottom="45dp"-->
+<!--        android:fontFamily="@font/alata"-->
+<!--        android:text="Play"-->
+<!--        android:textSize="16sp" />-->
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="133dp"
+        android:layout_height="58dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="154dp"
+        android:layout_marginTop="708dp"
+        android:layout_marginBottom="42dp"
         android:fontFamily="@font/alata"
         android:text="Play"
         android:textSize="16sp" />
