@@ -8,11 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 public class ChoosePlayer extends AppCompatActivity {
-//    private Button button;
     private RadioGroup carSelectionGroup;
     private RadioGroup difficultySelectionGroup;
     private EditText playerNameInput;
@@ -60,12 +58,12 @@ public class ChoosePlayer extends AppCompatActivity {
                     difficulty = "Hard";
                 }
 
-                // Start the GameScreen and pass the data
-                Intent GameScreen = new Intent(ChoosePlayer.this, GameScreen.class);
-                GameScreen.putExtra("player_name", playerName);
-                GameScreen.putExtra("car_selection", carSelection);
-                GameScreen.putExtra("difficulty", difficulty);
-                startActivity(GameScreen);
+                // Start the gameScreen and pass the data
+                Intent gameScreen = new Intent(ChoosePlayer.this, GameScreen.class);
+                gameScreen.putExtra("player_name", playerName);
+                gameScreen.putExtra("car_selection", carSelection);
+                gameScreen.putExtra("difficulty", difficulty);
+                startActivity(gameScreen);
             }
         });
 

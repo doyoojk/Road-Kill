@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openChoosePlayer() {
-        Intent ChoosePlayer = new Intent(this, ChoosePlayer.class);
-        startActivity(ChoosePlayer);
+        Intent choosePlayer = new Intent(this, ChoosePlayer.class);
+        startActivity(choosePlayer);
     }
 }
