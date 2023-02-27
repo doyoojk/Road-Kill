@@ -27,4 +27,6 @@ public class MainActivity extends AppCompatActivity {
         Intent choosePlayer = new Intent(this, ChoosePlayer.class);
         startActivity(choosePlayer);
     }
+
+
 }
