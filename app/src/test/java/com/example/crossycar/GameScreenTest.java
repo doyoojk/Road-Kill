@@ -3,9 +3,11 @@ package com.example.crossycar;
 import static org.junit.Assert.assertEquals;
 
 import android.view.MotionEvent;
-
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
+@RunWith(RobolectricTestRunner.class)
 public class GameScreenTest {
 
     @Test
