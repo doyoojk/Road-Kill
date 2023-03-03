@@ -27,8 +27,8 @@ public class GameScreen extends AppCompatActivity {
     private int score = 0;
 
     private ImageView car;
-    private int carY;
-    private int carX;
+    public int carY;
+    public int carX;
 
     private int level = 0;
 
