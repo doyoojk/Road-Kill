@@ -1,16 +1,18 @@
 package com.example.crossycar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.GestureDetectorCompat;
 
+import android.graphics.Point;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.GestureDetector;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -23,18 +25,24 @@ public class GameScreen extends AppCompatActivity {
 
     private TextView playerNameView;
     private TextView scoreTextView;
+
     private ImageView[] heartIcons = new ImageView[5];
+    private ImageView leftButton;
+    private ImageView rightButton;
+    private ImageView upButton;
+    private ImageView downButton;
     private int score = 0;
 
     private ImageView car;
-    private int carY;
-    private int carX;
+    public int carY;
+    public int carX;
 
-    private int level = 0;
-
-
+    private int vLevel = 0;
+    private int hLevel = 5;
     private int screenW = 1125;
     private int screenH = 2000;
+    private int tileSize = 100;
+
 
     private Handler handler = new Handler();
     private Timer timer = new Timer();
@@ -47,9 +55,18 @@ public class GameScreen extends AppCompatActivity {
         setContentView(R.layout.activity_game_screen);
 
 
-        // Add GridItems with image resource IDs and coordinates
-//        for (int i = 0; i < 9; i++) {
-//            int resId = getResources(); }
+
+        // on below line we are getting screen dimensions
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenW = size.x;
+        int screenH = size.y;
+        tileSize = screenH / 20;
+
+
+
+
 
         // Get references to the views
         playerNameView = findViewById(R.id.player_name);
@@ -61,6 +78,19 @@ public class GameScreen extends AppCompatActivity {
         heartIcons[4] = findViewById(R.id.heart_icon_5);
         scoreTextView = findViewById(R.id.score_text);
         car = (ImageView) findViewById(R.id.car_icon);
+
+        leftButton = findViewById(R.id.left_b);
+        rightButton = findViewById(R.id.right_b);
+        upButton = findViewById(R.id.up_b);
+        downButton = findViewById(R.id.down_b);
+
+        Cow cow1 = new Cow(screenW + 10, tileSize * 10, -40);
+        ImageView cow1view = findViewById(R.id.cow_icon);
+        cow1view.setY(cow1.getY());
+        cow1view.setX(cow1.getX());
+        cow1.moveObject(cow1view);
+
+
 
 
         // Get the data from the intent
@@ -82,7 +112,7 @@ public class GameScreen extends AppCompatActivity {
         }
 
         car = carIconView;
-        car.setVisibility(ImageView.VISIBLE);
+
 
         // Show the appropriate number of heart icons based on the difficulty
         int heartCount = 5;
@@ -102,72 +132,88 @@ public class GameScreen extends AppCompatActivity {
         //setting score to 0 initially
         scoreTextView.setText("Score: " + Integer.toString(score));
 
-        carX = 1125 / 2;
-        carY = 1900;
+
+
+        carIconView.getLayoutParams().width = tileSize;
+        carIconView.getLayoutParams().height = tileSize;
+
+
+        tileSize -= 10;
+        carX = screenW / 2 - 50;
+        carY = tileSize * 16;
+
+        carIconView.setY(carY);
+        car.setVisibility(ImageView.VISIBLE);
+
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                moveRight();
+            }
+        });
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                moveLeft();
+            }
+        });
+        upButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                moveUp();
+            }
+        });
+        downButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                moveDown();
+            }
+        });
+
 
     }
 
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-        if(level == 0) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                carY -= 108;
-                level++;
-
-            }
-
-        } else {
-
-        if(7 > level || level > 9) {
-
-        //if touch is to the left
-        if(x < 375) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if(carX > 100) {
-                    carX -= 100;
-                }
-            }
-
-
-        //if touch to the right
-        } else if(x > 750) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (carX < 950) {
-                    carX += 100;
-                }
-            }
-        }
-
-        //if touch elsewhere
-        }
-        if(x > 375 && x < 750 && y < (carY)) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (carY >= 300) {
-                        carY -= 108;
-                        level++;
-
-                }
-
-            }
-        }
-            if(x > 375 && x < 750 && y > (carY)) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (carY < 1800) {
-                        carY += 108;
-                        level--;
-
-                    }
-                }
-            }
-        car.setX(carX);
-        car.setY(carY);
-
+public void moveUp() {
+    if (vLevel < 15) {
+        carY -= tileSize;
+        vLevel++;
+        score++;
+        scoreTextView.setText("Score: " + Integer.toString(score));
     }
-        return true;
-}}
+    car.setX(carX);
+    car.setY(carY);
+}
+public void moveDown() {
+        if (vLevel > 0) {
+            carY += tileSize;
+            vLevel--;
+            score--;
+            scoreTextView.setText("Score: " + Integer.toString(score));
+        }
+    car.setX(carX);
+    car.setY(carY);
+    }
+
+public void moveLeft() {
+        if (hLevel > 0) {
+            carX -= tileSize - 4;
+            hLevel--;
+        }
+    car.setX(carX);
+    car.setY(carY);
+    }
+public void moveRight() {
+    if (hLevel < 10) {
+        carX += tileSize - 4;
+        hLevel++;
+    }
+    car.setX(carX);
+    car.setY(carY);
+    }
+
+}
+
+
+
+
+
+
 
 
 
