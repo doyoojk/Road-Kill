@@ -141,7 +141,8 @@
         android:id="@+id/car_icon"
         android:layout_width = "100px"
         android:layout_height = "100px"
-        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="324px"
+        android:layout_marginLeft="540px"
         />
 
 
