@@ -46,10 +46,10 @@ public class GameScreen extends AppCompatActivity {
 
     private int vLevel = 0;
     private int hLevel = 5;
-    private int screenW = 1125;
-    private int screenH = 2000;
-    private int tileSize = 100;
-
+    private int screenW = 1125; //before setting values
+    private int screenH = 2000; //before setting values
+    private int tileSize = 100; //before setting values
+    private String[][] tileTypes = new String[20][10];
 
     private Handler handler = new Handler();
     private Timer timer = new Timer();
@@ -89,6 +89,7 @@ public class GameScreen extends AppCompatActivity {
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.filler);
                 gameGrid.addView(imageView);
+                tileTypes[i][j] = "filler";
             }
         }
         for (int i = 0; i < 1; i++) {
@@ -97,6 +98,7 @@ public class GameScreen extends AppCompatActivity {
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.goal);
                 gameGrid.addView(imageView);
+                tileTypes[i + 1][j] = "goal";
             }
         }
 
@@ -119,16 +121,18 @@ public class GameScreen extends AppCompatActivity {
                                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                                 imageView.setImageResource(R.drawable.grass);
                                 gameGrid.addView(imageView);
+                                tileTypes[i + 2 + (14 - layers)][j] = "grass";
                             }
                         }
                         layers -= 3;
-                    } else {
+                    } else { //if there is not enough layers to make 3 layers of grass
                         for (int i = 0; i < layers; i++) {
                             for (int j = 0; j < gameGrid.getColumnCount(); j++) {
                                 ImageView imageView = new ImageView(this);
                                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                                 imageView.setImageResource(R.drawable.grass);
                                 gameGrid.addView(imageView);
+                                tileTypes[i + 2 + (14 - layers)][j] = "grass";
                             }
                         }
                         layers = 0;
@@ -142,6 +146,7 @@ public class GameScreen extends AppCompatActivity {
                             imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                             imageView.setImageResource(R.drawable.street);
                             gameGrid.addView(imageView);
+                            tileTypes[i + 2 + (14 - layers)][j] = "street";
                         }
                     }
                     layers -= 1;
@@ -155,16 +160,18 @@ public class GameScreen extends AppCompatActivity {
                                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                                 imageView.setImageResource(R.drawable.river);
                                 gameGrid.addView(imageView);
+                                tileTypes[i + 2 + (14 - layers)][j] = "river";
                             }
                         }
                         layers -= 2;
-                    } else {
+                    } else { //if there is not enough layers to make 2 layers of river
                         for (int i = 0; i < layers; i++) {
                             for (int j = 0; j < gameGrid.getColumnCount(); j++) {
                                 ImageView imageView = new ImageView(this);
                                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                                 imageView.setImageResource(R.drawable.river);
                                 gameGrid.addView(imageView);
+                                tileTypes[i + 2 + (14 - layers)][j] = "river";
                             }
                         }
                         layers = 0;
@@ -181,6 +188,7 @@ public class GameScreen extends AppCompatActivity {
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.goal);
                 gameGrid.addView(imageView);
+                tileTypes[i + 16][j] = "start";
             }
         }
         for (int i = 0; i < 3; i++) {
@@ -189,8 +197,18 @@ public class GameScreen extends AppCompatActivity {
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.filler);
                 gameGrid.addView(imageView);
+                tileTypes[i + 17][j] = "filler";
             }
         }
+
+//        //testing for tileTypes
+//        for (int i = 0; i < tileTypes.length; i++) {
+//            for (int j = 0; j < tileTypes[i].length; j++) {
+//                System.out.print(tileTypes[i][j] + i + j + " ");
+//            }
+//            System.out.println();
+//        }
+
 
         // Add grid layout to root view
         RelativeLayout rootView = findViewById(R.id.root_view);
@@ -337,5 +355,10 @@ public class GameScreen extends AppCompatActivity {
         car.setY(carY);
     }
 
+    public String getTileType(int x, int y) {
+        int row = y/tileSize;
+        int col = x/tileSize;
+        return tileTypes[row][col];
+    }
 }
 
