@@ -244,7 +244,7 @@ public class GameScreen extends AppCompatActivity {
             if (tileTypes[row][0].equals("grass")) {
                 int cowOrDeer = rand.nextInt(2);
                 int vel = rand.nextInt(31);
-                int delayDist = rand.nextInt(991) + 10;
+                int delayDist = rand.nextInt(500) + 10;
                 if (cowOrDeer == 0) {
                     Deer deer1 = new Deer(screenW + delayDist, row * tileSize, vel);
                     ImageView deer1view = new ImageView(this);
@@ -273,7 +273,7 @@ public class GameScreen extends AppCompatActivity {
             if (tileTypes[row][0].equals("river")) {
                 int boatOrLog = rand.nextInt(2);
                 int vel = rand.nextInt(31);
-                int delayDist = rand.nextInt(991) + 10;
+                int delayDist = rand.nextInt(500) + 10;
                 if (boatOrLog == 0) { //creating logs
                     Log log1 = new Log(screenW + delayDist, row * tileSize, vel);
                     ImageView log1view = new ImageView(this);
@@ -353,21 +353,25 @@ public class GameScreen extends AppCompatActivity {
         rightButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 moveRight();
+                //System.out.println("X: " + carX + " " + "Y: " + carY);
             }
         });
         leftButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 moveLeft();
+                //System.out.println("X: " + carX + " " + "Y: " + carY);
             }
         });
         upButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 moveUp();
+                //System.out.println("X: " + carX + " " + "Y: " + carY);
             }
         });
         downButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 moveDown();
+                //System.out.println("X: " + carX + " " + "Y: " + carY);
             }
         });
 
