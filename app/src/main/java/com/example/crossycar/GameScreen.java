@@ -11,13 +11,18 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 
 
@@ -57,18 +62,139 @@ public class GameScreen extends AppCompatActivity {
         setContentView(R.layout.activity_game_screen);
 
 
-
         // on below line we are getting screen dimensions
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int screenW = size.x;
         int screenH = size.y;
-        tileSize = screenH / 20;
+        //tileSize = screenH / 20;
 
+        // Create grid layout
+        GridLayout gameGrid = new GridLayout(this);
+        // Calculate tile size based on screen dimensions
+        gameGrid.setColumnCount(10);
+        gameGrid.setRowCount(20);
+        tileSize = Math.min(screenW / gameGrid.getColumnCount(), screenH / gameGrid.getRowCount());
 
+        // Set layout parameters to match parent layout's dimensions
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        gameGrid.setLayoutParams(layoutParams);
 
+        //initializing goal tiles
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+                ImageView imageView = new ImageView(this);
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                imageView.setImageResource(R.drawable.filler);
+                gameGrid.addView(imageView);
+            }
+        }
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+                ImageView imageView = new ImageView(this);
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                imageView.setImageResource(R.drawable.goal);
+                gameGrid.addView(imageView);
+            }
+        }
 
+        // Add tile layers to grid
+        Random rand = new Random();
+        int layers = 14;
+        int prevRand = -1;
+        while (layers > 0) {
+            int x = rand.nextInt(3);
+            if (x == prevRand) {
+                continue;
+            }
+            switch (x) {
+                case 0: //grass
+                    prevRand = 0;
+                    if (layers > 3) {
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                                ImageView imageView = new ImageView(this);
+                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                                imageView.setImageResource(R.drawable.grass);
+                                gameGrid.addView(imageView);
+                            }
+                        }
+                        layers -= 3;
+                    } else {
+                        for (int i = 0; i < layers; i++) {
+                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                                ImageView imageView = new ImageView(this);
+                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                                imageView.setImageResource(R.drawable.grass);
+                                gameGrid.addView(imageView);
+                            }
+                        }
+                        layers = 0;
+                    }
+                    break;
+                case 1: //street
+                    prevRand = 1;
+                    for (int i = 0; i < 1; i++) {
+                        for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                            ImageView imageView = new ImageView(this);
+                            imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                            imageView.setImageResource(R.drawable.street);
+                            gameGrid.addView(imageView);
+                        }
+                    }
+                    layers -= 1;
+                    break;
+                case 2: //river
+                    prevRand = 2;
+                    if (layers > 2) {
+                        for (int i = 0; i < 2; i++) {
+                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                                ImageView imageView = new ImageView(this);
+                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                                imageView.setImageResource(R.drawable.river);
+                                gameGrid.addView(imageView);
+                            }
+                        }
+                        layers -= 2;
+                    } else {
+                        for (int i = 0; i < layers; i++) {
+                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                                ImageView imageView = new ImageView(this);
+                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                                imageView.setImageResource(R.drawable.river);
+                                gameGrid.addView(imageView);
+                            }
+                        }
+                        layers = 0;
+                    }
+                    break;
+            }
+
+        }
+
+        //initialize start tiles
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+                ImageView imageView = new ImageView(this);
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                imageView.setImageResource(R.drawable.goal);
+                gameGrid.addView(imageView);
+            }
+        }
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+                ImageView imageView = new ImageView(this);
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
+                imageView.setImageResource(R.drawable.filler);
+                gameGrid.addView(imageView);
+            }
+        }
+
+        // Add grid layout to root view
+        RelativeLayout rootView = findViewById(R.id.root_view);
+        rootView.addView(gameGrid);
 
         // Get references to the views
         playerNameView = findViewById(R.id.player_name);
@@ -94,7 +220,6 @@ public class GameScreen extends AppCompatActivity {
 
 
 
-
         // Get the data from the intent
         String playerName = getIntent().getStringExtra("player_name");
         String carSelection = getIntent().getStringExtra("car_selection");
@@ -114,7 +239,6 @@ public class GameScreen extends AppCompatActivity {
         }
 
         car = carIconView;
-
 
         // Show the appropriate number of heart icons based on the difficulty
         int heartCount = 5;
@@ -140,8 +264,7 @@ public class GameScreen extends AppCompatActivity {
         carIconView.getLayoutParams().height = tileSize;
 
 
-        tileSize -= 10;
-        carX = screenW / 2 - 50;
+        carX = tileSize * 5;
         carY = tileSize * 16;
 
         carIconView.setY(carY);
@@ -191,7 +314,6 @@ public class GameScreen extends AppCompatActivity {
         if (vLevel > 0) {
             carY += tileSize;
             vLevel--;
-//            score--;
             scoreTextView.setText("Score: " + Integer.toString(score));
         }
         car.setX(carX);
