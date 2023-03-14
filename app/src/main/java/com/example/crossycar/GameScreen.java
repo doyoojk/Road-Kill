@@ -32,10 +32,8 @@ public class GameScreen extends AppCompatActivity {
 
     private TextView playerNameView;
     private TextView scoreTextView;
-    private RelativeLayout cowView;
-    private RelativeLayout deerView;
-    private RelativeLayout boatView;
-    private RelativeLayout logView;
+    private RelativeLayout grassView;
+    private RelativeLayout riverView;
     private ImageView[] heartIcons = new ImageView[5];
     private ImageView leftButton;
     private ImageView rightButton;
@@ -228,10 +226,8 @@ public class GameScreen extends AppCompatActivity {
         heartIcons[4] = findViewById(R.id.heart_icon_5);
         scoreTextView = findViewById(R.id.score_text);
         car = (ImageView) findViewById(R.id.car_icon);
-        cowView = findViewById(R.id.cow_view);
-        boatView = findViewById(R.id.boat_view);
-        logView = findViewById(R.id.log_view);
-        deerView = findViewById(R.id.deer_view);
+        grassView = findViewById(R.id.grass_view);
+        riverView = findViewById(R.id.river_view);
 
         leftButton = findViewById(R.id.left_b);
         rightButton = findViewById(R.id.right_b);
@@ -253,7 +249,7 @@ public class GameScreen extends AppCompatActivity {
                     deer1view.setX(deer1.getX());
                     deer1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
                     deer1.moveObject(deer1view);
-                    deerView.addView(deer1view);
+                    grassView.addView(deer1view);
                 } else {
                     // Create a new instance of the Cow class and pass in the grass coordinates
                     Cow cow1 = new Cow(screenW + delayDist, row * tileSize, vel);
@@ -263,14 +259,9 @@ public class GameScreen extends AppCompatActivity {
                     cow1view.setX(cow1.getX());
                     cow1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
                     cow1.moveObject(cow1view);
-                    cowView.addView(cow1view);
+                    grassView.addView(cow1view);
                 }
-            }
-        }
-
-        //Creating boats & logs on river tiles
-        for (int row = 0; row < tileTypes.length; row++) {
-            if (tileTypes[row][0].equals("river")) {
+            } else if (tileTypes[row][0].equals("river")) { //creating boats and logs on river tiles
                 int boatOrLog = rand.nextInt(2);
                 int vel = rand.nextInt(31);
                 int delayDist = rand.nextInt(500) + 10;
@@ -282,7 +273,7 @@ public class GameScreen extends AppCompatActivity {
                     log1view.setX(log1.getX());
                     log1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
                     log1.moveObject(log1view);
-                    boatView.addView(log1view);
+                    riverView.addView(log1view);
                 } else { //creating boats
                     Boat boat1 = new Boat(screenW + delayDist, row * tileSize, vel);
                     ImageView boat1view = new ImageView(this);
@@ -291,13 +282,10 @@ public class GameScreen extends AppCompatActivity {
                     boat1view.setX(boat1.getX());
                     boat1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
                     boat1.moveObject(boat1view);
-                    boatView.addView(boat1view);
+                    riverView.addView(boat1view);
                 }
             }
         }
-
-
-
 
 
         // Get the data from the intent

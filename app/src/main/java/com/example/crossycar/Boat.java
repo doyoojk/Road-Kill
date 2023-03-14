@@ -21,7 +21,7 @@ public class Boat {
     }
     public void moveObject(ImageView view) {
         Animation animation = new TranslateAnimation(x, -2200, 0, 0);
-        int duration = 20000 - (velocity * 10);
+        int duration = 15000 - (velocity * 10);
         animation.setDuration(duration); // set the duration of the animation (in milliseconds)
         animation.setRepeatCount(Animation.INFINITE); // set the animation to repeat indefinitely
         view.startAnimation(animation); // apply the animation to the view

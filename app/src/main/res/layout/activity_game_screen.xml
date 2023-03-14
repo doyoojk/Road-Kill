@@ -118,22 +118,12 @@
         android:src="@drawable/left_b" />
 
     <RelativeLayout
-        android:id="@+id/cow_view"
+        android:id="@+id/grass_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <RelativeLayout
-        android:id="@+id/deer_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <RelativeLayout
-        android:id="@+id/boat_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <RelativeLayout
-        android:id="@+id/log_view"
+        android:id="@+id/river_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
