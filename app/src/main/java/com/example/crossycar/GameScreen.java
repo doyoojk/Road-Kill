@@ -32,6 +32,8 @@ public class GameScreen extends AppCompatActivity {
 
     private TextView playerNameView;
     private TextView scoreTextView;
+    private RelativeLayout cowView;
+    private RelativeLayout boatView;
 
     private ImageView[] heartIcons = new ImageView[5];
     private ImageView leftButton;
@@ -133,6 +135,7 @@ public class GameScreen extends AppCompatActivity {
                                 imageView.setImageResource(R.drawable.grass);
                                 gameGrid.addView(imageView);
                                 tileTypes[i + 2 + (14 - layers)][j] = "grass";
+
                             }
                         }
                         layers = 0;
@@ -224,17 +227,50 @@ public class GameScreen extends AppCompatActivity {
         heartIcons[4] = findViewById(R.id.heart_icon_5);
         scoreTextView = findViewById(R.id.score_text);
         car = (ImageView) findViewById(R.id.car_icon);
+        cowView = findViewById(R.id.cow_view);
+        boatView = findViewById(R.id.boat_view);
 
         leftButton = findViewById(R.id.left_b);
         rightButton = findViewById(R.id.right_b);
         upButton = findViewById(R.id.up_b);
         downButton = findViewById(R.id.down_b);
 
-        Cow cow1 = new Cow(screenW + 10, tileSize * 10, -40);
-        ImageView cow1view = findViewById(R.id.cow_icon);
-        cow1view.setY(cow1.getY());
-        cow1view.setX(cow1.getX());
-        cow1.moveObject(cow1view);
+
+        //Creating cows on grass tiles
+        for (int row = 0; row < tileTypes.length; row++) {
+            if (tileTypes[row][0].equals("grass")) {
+                // Create a new instance of the Cow class and pass in the grass coordinates
+                int vel = rand.nextInt(31);
+                int delayDist = rand.nextInt(991) + 10;
+                Cow cow1 = new Cow(screenW + delayDist, row * tileSize, vel);
+                ImageView cow1view = new ImageView(this);
+                cow1view.setImageResource(R.drawable.cow);
+                cow1view.setY(cow1.getY());
+                cow1view.setX(cow1.getX());
+                cow1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
+                cow1.moveObject(cow1view);
+                cowView.addView(cow1view);
+            }
+        }
+
+        //Creating boats & logs on river tiles
+        for (int row = 0; row < tileTypes.length; row++) {
+            if (tileTypes[row][0].equals("river")) {
+                // Create a new instance of the Cow class and pass in the grass coordinates
+                int vel = rand.nextInt(31);
+                int delayDist = rand.nextInt(991) + 10;
+                Boat boat1 = new Boat(screenW + delayDist, row * tileSize, vel);
+                ImageView boat1view = new ImageView(this);
+                boat1view.setImageResource(R.drawable.boat );
+                boat1view.setY(boat1.getY());
+                boat1view.setX(boat1.getX());
+                boat1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
+                boat1.moveObject(boat1view);
+                boatView.addView(boat1view);
+            }
+        }
+
+
 
 
 

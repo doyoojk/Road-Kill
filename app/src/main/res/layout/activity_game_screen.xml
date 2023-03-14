@@ -33,13 +33,6 @@
         android:textSize="16dp"
         android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/car_icon"
-        android:layout_width = "100px"
-        android:layout_height = "100px"
-        android:layout_centerHorizontal="true"
-        />
-
     <LinearLayout
         android:layout_width="182dp"
         android:layout_height="62dp"
@@ -124,11 +117,21 @@
 
         android:src="@drawable/left_b" />
 
+    <RelativeLayout
+        android:id="@+id/cow_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/boat_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ImageView
-        android:id = "@+id/cow_icon"
-        android:layout_width="100px"
-        android:layout_height="100px"
-        android:src = "@drawable/cow"
+        android:id="@+id/car_icon"
+        android:layout_width = "100px"
+        android:layout_height = "100px"
+        android:layout_centerHorizontal="true"
         />
 
 
