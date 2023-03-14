@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 
@@ -169,11 +171,17 @@ public class GameScreen extends AppCompatActivity {
 
     }
 
+    //List to keep track of previous carY locations so score updates correctly
+    List<Integer> carPastY = new ArrayList<Integer>();
     public void moveUp() {
         if (vLevel < 15) {
             carY -= tileSize;
+            if (!carPastY.contains(carY)) {
+                score++;
+                carPastY.add(carY);
+            }
+            carPastY.add(carY);
             vLevel++;
-            score++;
             scoreTextView.setText("Score: " + Integer.toString(score));
         }
         car.setX(carX);
@@ -183,7 +191,7 @@ public class GameScreen extends AppCompatActivity {
         if (vLevel > 0) {
             carY += tileSize;
             vLevel--;
-            score--;
+//            score--;
             scoreTextView.setText("Score: " + Integer.toString(score));
         }
         car.setX(carX);
