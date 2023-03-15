@@ -4,12 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
 import android.graphics.Point;
-import android.media.Image;
+
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
+
 import android.view.Display;
-import android.view.MotionEvent;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
@@ -19,8 +19,7 @@ import android.widget.TextView;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -42,8 +41,8 @@ public class GameScreen extends AppCompatActivity {
     private int score = 0;
 
     private ImageView car;
-    public int carY;
-    public int carX;
+    private int carY;
+    private int carX;
 
     private int vLevel = 0;
     private int hLevel = 5;
@@ -61,8 +60,78 @@ public class GameScreen extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
+        makeGame();
+    }
 
+    //List to keep track of previous carY locations so score updates correctly
+    private List<Integer> carPastY = new ArrayList<Integer>();
+    public void moveUp() {
+        if (vLevel < 15) {
+            carY -= tileSize;
+            if (!carPastY.contains(carY)) {
+                score++;
+                carPastY.add(carY);
+                // The number of points gained from crossing different obstacles is different.
+                if (getTileType(carX, carY) == "grass") {
+                    score += 1;
+                } else if (getTileType(carX, carY) == "river") {
+                    score += 2;
+                }
+            }
+            carPastY.add(carY);
+            vLevel++;
+            scoreTextView.setText("Score: " + Integer.toString(score));
+        }
+        car.setX(carX);
+        car.setY(carY);
+    }
+    public void moveDown() {
+        if (vLevel > 0) {
+            carY += tileSize;
+            vLevel--;
+            scoreTextView.setText("Score: " + Integer.toString(score));
+        }
+        car.setX(carX);
+        car.setY(carY);
+    }
 
+    public void moveLeft() {
+        if (hLevel > 0) {
+            carX -= tileSize - 4;
+            hLevel--;
+        }
+        car.setX(carX);
+        car.setY(carY);
+    }
+    public void moveRight() {
+        if (hLevel < 10) {
+            carX += tileSize - 4;
+            hLevel++;
+        }
+        car.setX(carX);
+        car.setY(carY);
+    }
+
+    public String getTileType(int x, int y) {
+        int row = y / tileSize;
+        int col = x / tileSize;
+        return tileTypes[row][col];
+    }
+
+    public int getCarY() {
+        return carY;
+    }
+    public int getCarX() {
+        return carX;
+    }
+    public void setCarY(int y) {
+        carY = y;
+    }
+    public void setCarX(int x) {
+        carX = x;
+    }
+
+    public void makeGame() {
         // on below line we are getting screen dimensions
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -85,7 +154,7 @@ public class GameScreen extends AppCompatActivity {
 
         //initializing goal tiles
         for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
                 ImageView imageView = new ImageView(this);
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.filler);
@@ -94,7 +163,7 @@ public class GameScreen extends AppCompatActivity {
             }
         }
         for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
                 ImageView imageView = new ImageView(this);
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.goal);
@@ -113,79 +182,92 @@ public class GameScreen extends AppCompatActivity {
                 continue;
             }
             switch (x) {
-                case 0: //grass
-                    prevRand = 0;
-                    if (layers > 3) {
-                        for (int i = 0; i < 3; i++) {
-                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
-                                ImageView imageView = new ImageView(this);
-                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
-                                imageView.setImageResource(R.drawable.grass);
-                                gameGrid.addView(imageView);
-                                tileTypes[i + 2 + (14 - layers)][j] = "grass";
-                            }
-                        }
-                        layers -= 3;
-                    } else { //if there is not enough layers to make 3 layers of grass
-                        for (int i = 0; i < layers; i++) {
-                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
-                                ImageView imageView = new ImageView(this);
-                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
-                                imageView.setImageResource(R.drawable.grass);
-                                gameGrid.addView(imageView);
-                                tileTypes[i + 2 + (14 - layers)][j] = "grass";
-
-                            }
-                        }
-                        layers = 0;
-                    }
-                    break;
-                case 1: //street
-                    prevRand = 1;
-                    for (int i = 0; i < 1; i++) {
+            case 0: //grass
+                prevRand = 0;
+                if (layers > 3) {
+                    for (int i = 0; i < 3; i++) {
                         for (int j = 0; j < gameGrid.getColumnCount(); j++) {
                             ImageView imageView = new ImageView(this);
-                            imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
-                            imageView.setImageResource(R.drawable.street);
+                            imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                                    tileSize, tileSize));
+                            imageView.setImageResource(R.drawable.grass);
                             gameGrid.addView(imageView);
-                            tileTypes[i + 2 + (14 - layers)][j] = "street";
+                            tileTypes[i + 2 + (14 - layers)][j] = "grass";
                         }
                     }
-                    layers -= 1;
-                    break;
-                case 2: //river
-                    prevRand = 2;
-                    if (layers > 2) {
-                        for (int i = 0; i < 2; i++) {
-                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
-                                ImageView imageView = new ImageView(this);
-                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
-                                imageView.setImageResource(R.drawable.river);
-                                gameGrid.addView(imageView);
-                                tileTypes[i + 2 + (14 - layers)][j] = "river";
-                            }
+                    layers -= 3;
+                } else { //if there is not enough layers to make 3 layers of grass
+                    for (int i = 0; i < layers; i++) {
+                        for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                            ImageView imageView = new
+                                    ImageView(this);
+                            imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                                    tileSize, tileSize));
+                            imageView.setImageResource(R.drawable.grass);
+                            gameGrid.addView(imageView);
+                            tileTypes[i + 2 + (14 - layers)][j] = "grass";
+
                         }
-                        layers -= 2;
-                    } else { //if there is not enough layers to make 2 layers of river
-                        for (int i = 0; i < layers; i++) {
-                            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
-                                ImageView imageView = new ImageView(this);
-                                imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
-                                imageView.setImageResource(R.drawable.river);
-                                gameGrid.addView(imageView);
-                                tileTypes[i + 2 + (14 - layers)][j] = "river";
-                            }
-                        }
-                        layers = 0;
                     }
-                    break;
+                    layers = 0;
+                }
+                break;
+            case 1: //street
+                prevRand = 1;
+                for (int i = 0; i < 1; i++) {
+                    for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                        ImageView imageView = new ImageView(this);
+                        imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                                tileSize, tileSize));
+                        imageView.setImageResource(R.drawable.street);
+                        gameGrid.addView(imageView);
+                        tileTypes[i + 2 + (14 - layers)][j] = "street";
+                    }
+                }
+                layers -= 1;
+                break;
+            case 2: //river
+                prevRand = 2;
+                if (layers > 2) {
+                    for (int i = 0; i < 2; i++) {
+                        for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                            ImageView imageView = new ImageView(this);
+                            imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                                    tileSize, tileSize));
+                            imageView.setImageResource(R.drawable.river);
+                            gameGrid.addView(imageView);
+                            tileTypes[i + 2 + (14 - layers)][j] = "river";
+                        }
+                    }
+                    layers -= 2;
+                } else { //if there is not enough layers to make 2 layers of river
+                    for (int i = 0; i < layers; i++) {
+                        for (int j = 0; j < gameGrid.getColumnCount(); j++) {
+                            ImageView imageView = new ImageView(this);
+                            imageView.setLayoutParams(new ViewGroup.LayoutParams(
+                                    tileSize, tileSize));
+                            imageView.setImageResource(R.drawable.river);
+                            gameGrid.addView(imageView);
+                            tileTypes[i + 2 + (14 - layers)][j] = "river";
+                        }
+                    }
+                    layers = 0;
+                }
+                break;
+            default:
+                break;
             }
 
         }
 
+        makeGame2(gameGrid, rand);
+
+
+    }
+    public void makeGame2(GridLayout gameGrid, Random rand) {
         //initialize start tiles
         for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
                 ImageView imageView = new ImageView(this);
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.goal);
@@ -194,7 +276,7 @@ public class GameScreen extends AppCompatActivity {
             }
         }
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < gameGrid.getColumnCount(); j++){
+            for (int j = 0; j < gameGrid.getColumnCount(); j++) {
                 ImageView imageView = new ImageView(this);
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(tileSize, tileSize));
                 imageView.setImageResource(R.drawable.filler);
@@ -203,13 +285,13 @@ public class GameScreen extends AppCompatActivity {
             }
         }
 
-//        //testing for tileTypes
-//        for (int i = 0; i < tileTypes.length; i++) {
-//            for (int j = 0; j < tileTypes[i].length; j++) {
-//                System.out.print(tileTypes[i][j] + i + j + " ");
-//            }
-//            System.out.println();
-//        }
+        //        //testing for tileTypes
+        //        for (int i = 0; i < tileTypes.length; i++) {
+        //            for (int j = 0; j < tileTypes[i].length; j++) {
+        //                System.out.print(tileTypes[i][j] + i + j + " ");
+        //            }
+        //            System.out.println();
+        //        }
 
 
         // Add grid layout to root view
@@ -235,57 +317,7 @@ public class GameScreen extends AppCompatActivity {
         downButton = findViewById(R.id.down_b);
 
 
-        //Creating cows on grass tiles
-        for (int row = 0; row < tileTypes.length; row++) {
-            if (tileTypes[row][0].equals("grass")) {
-                int cowOrDeer = rand.nextInt(2);
-                int vel = rand.nextInt(31);
-                int delayDist = rand.nextInt(500) + 10;
-                if (cowOrDeer == 0) {
-                    Deer deer1 = new Deer(screenW + delayDist, row * tileSize, vel);
-                    ImageView deer1view = new ImageView(this);
-                    deer1view.setImageResource(R.drawable.deer);
-                    deer1view.setY(deer1.getY());
-                    deer1view.setX(deer1.getX());
-                    deer1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
-                    deer1.moveObject(deer1view);
-                    grassView.addView(deer1view);
-                } else {
-                    // Create a new instance of the Cow class and pass in the grass coordinates
-                    Cow cow1 = new Cow(screenW + delayDist, row * tileSize, vel);
-                    ImageView cow1view = new ImageView(this);
-                    cow1view.setImageResource(R.drawable.cow);
-                    cow1view.setY(cow1.getY());
-                    cow1view.setX(cow1.getX());
-                    cow1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
-                    cow1.moveObject(cow1view);
-                    grassView.addView(cow1view);
-                }
-            } else if (tileTypes[row][0].equals("river")) { //creating boats and logs on river tiles
-                int boatOrLog = rand.nextInt(2);
-                int vel = rand.nextInt(31);
-                int delayDist = rand.nextInt(500) + 10;
-                if (boatOrLog == 0) { //creating logs
-                    Log log1 = new Log(screenW + delayDist, row * tileSize, vel);
-                    ImageView log1view = new ImageView(this);
-                    log1view.setImageResource(R.drawable.logs);
-                    log1view.setY(log1.getY());
-                    log1view.setX(log1.getX());
-                    log1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
-                    log1.moveObject(log1view);
-                    riverView.addView(log1view);
-                } else { //creating boats
-                    Boat boat1 = new Boat(screenW + delayDist, row * tileSize, vel);
-                    ImageView boat1view = new ImageView(this);
-                    boat1view.setImageResource(R.drawable.boat);
-                    boat1view.setY(boat1.getY());
-                    boat1view.setX(boat1.getX());
-                    boat1view.setLayoutParams(new RelativeLayout.LayoutParams(tileSize, tileSize)); // set layout params to match tile size
-                    boat1.moveObject(boat1view);
-                    riverView.addView(boat1view);
-                }
-            }
-        }
+        createObstacles(rand);
 
 
         // Get the data from the intent
@@ -366,59 +398,71 @@ public class GameScreen extends AppCompatActivity {
 
     }
 
-    //List to keep track of previous carY locations so score updates correctly
-    List<Integer> carPastY = new ArrayList<Integer>();
-    public void moveUp() {
-        if (vLevel < 15) {
-            carY -= tileSize;
-            if (!carPastY.contains(carY)) {
-                score++;
-                carPastY.add(carY);
-                // The number of points gained from crossing different obstacles is different.
-                if (getTileType(carX, carY) == "grass") {
-                    score += 1;
-                } else if (getTileType(carX, carY) == "river") {
-                    score += 2;
+    public void createObstacles(Random rand) {
+        //Creating cows on grass tiles
+        for (int row = 0; row < tileTypes.length; row++) {
+            if (tileTypes[row][0].equals("grass")) {
+                int cowOrDeer = rand.nextInt(2);
+                int vel = rand.nextInt(31);
+                int delayDist = rand.nextInt(500) + 10;
+                int start = screenW + delayDist;
+                int direction = 0;
+                if (row % 3 == 0) {
+                    start = -100 - delayDist;
+                    direction = 1;
+                }
+
+                if (cowOrDeer == 0) {
+                    Deer deer1 = new Deer(start, row * tileSize, vel, direction);
+                    ImageView deer1view = new ImageView(this);
+                    deer1view.setImageResource(R.drawable.deer);
+                    deer1view.setY(deer1.getY());
+                    deer1view.setX(deer1.getX());
+                    deer1view.setLayoutParams(new RelativeLayout.LayoutParams(
+                            tileSize, tileSize)); // set layout params to match tile size
+                    deer1.moveObject(deer1view);
+                    grassView.addView(deer1view);
+                } else {
+                    // Create a new instance of the Cow class and pass in the grass coordinates
+                    Cow cow1 = new Cow(start, row * tileSize, vel, direction);
+                    ImageView cow1view = new ImageView(this);
+                    cow1view.setImageResource(R.drawable.cow);
+                    cow1view.setY(cow1.getY());
+                    cow1view.setX(cow1.getX());
+                    cow1view.setLayoutParams(new RelativeLayout.LayoutParams(
+                            tileSize, tileSize)); // set layout params to match tile size
+                    cow1.moveObject(cow1view);
+                    grassView.addView(cow1view);
+                }
+            } else if (tileTypes[row][0].equals("river")) { //creating boats and logs on river tiles
+                int boatOrLog = rand.nextInt(2);
+                int vel = rand.nextInt(31);
+                int delayDist = rand.nextInt(500) + 10;
+                if (boatOrLog == 0) { //creating logs
+                    Log log1 = new Log(screenW + delayDist, row * tileSize, vel);
+                    ImageView log1view = new ImageView(this);
+                    log1view.setImageResource(R.drawable.logs);
+                    log1view.setY(log1.getY());
+                    log1view.setX(log1.getX());
+                    log1view.setLayoutParams(new RelativeLayout.LayoutParams(
+                            tileSize, tileSize)); // set layout params to match tile size
+                    log1.moveObject(log1view);
+                    riverView.addView(log1view);
+                } else { //creating boats
+                    Boat boat1 = new Boat(screenW + delayDist, row * tileSize, vel);
+                    ImageView boat1view = new ImageView(this);
+                    boat1view.setImageResource(R.drawable.boat);
+                    boat1view.setY(boat1.getY());
+                    boat1view.setX(boat1.getX());
+                    boat1view.setLayoutParams(new RelativeLayout.LayoutParams(
+                            tileSize, tileSize)); // set layout params to match tile size
+                    boat1.moveObject(boat1view);
+                    riverView.addView(boat1view);
                 }
             }
-            carPastY.add(carY);
-            vLevel++;
-            scoreTextView.setText("Score: " + Integer.toString(score));
         }
-        car.setX(carX);
-        car.setY(carY);
-    }
-    public void moveDown() {
-        if (vLevel > 0) {
-            carY += tileSize;
-            vLevel--;
-            scoreTextView.setText("Score: " + Integer.toString(score));
-        }
-        car.setX(carX);
-        car.setY(carY);
-    }
-
-    public void moveLeft() {
-        if (hLevel > 0) {
-            carX -= tileSize - 4;
-            hLevel--;
-        }
-        car.setX(carX);
-        car.setY(carY);
-    }
-    public void moveRight() {
-        if (hLevel < 10) {
-            carX += tileSize - 4;
-            hLevel++;
-        }
-        car.setX(carX);
-        car.setY(carY);
-    }
-
-    public String getTileType(int x, int y) {
-        int row = y/tileSize;
-        int col = x/tileSize;
-        return tileTypes[row][col];
     }
 }
+
+
 

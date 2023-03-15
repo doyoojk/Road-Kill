@@ -4,10 +4,10 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
-import java.util.Random;
 
 public class Log {
-    private int x, y;
+    private int x;
+    private int y;
     //private int width, height;
     private int velocity;
 
