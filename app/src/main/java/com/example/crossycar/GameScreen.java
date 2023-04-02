@@ -3,6 +3,7 @@ package com.example.crossycar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GestureDetectorCompat;
 
+import android.content.Intent;
 import android.graphics.Point;
 
 import android.os.Bundle;
@@ -57,7 +58,6 @@ public class GameScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
         makeGame();
@@ -68,6 +68,12 @@ public class GameScreen extends AppCompatActivity {
     public void moveUp() {
         if (vLevel < 15) {
             carY -= tileSize;
+            //checking if the car makes it to the goal & sends it to the game end screen
+            if (getTileType(carX, carY) == "goal") {
+                Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
+                gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
+                startActivity(gameEndScreen);
+            }
             if (!carPastY.contains(carY)) {
                 score++;
                 carPastY.add(carY);
@@ -261,8 +267,6 @@ public class GameScreen extends AppCompatActivity {
         }
 
         makeGame2(gameGrid, rand);
-
-
     }
     public void makeGame2(GridLayout gameGrid, Random rand) {
         //initialize start tiles
