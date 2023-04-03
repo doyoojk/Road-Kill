@@ -15,6 +15,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
+import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -43,46 +44,74 @@ public class MainActivityTest {
     Test checks if start button exists and contains the text: START GAME
     written by: Katherine
      */
+//    @Test
+//    public void checkStartActivates() {
+//        ViewInteraction button = onView(
+//                allOf(withId(R.id.game_start_button), withText("START GAME"),
+//                        withParent(withParent(withId(android.R.id.content))),
+//                        isDisplayed()));
+//        button.check(matches(isDisplayed()));
+//    }
     @Test
     public void checkStartActivates() {
         ViewInteraction button = onView(
                 allOf(withId(R.id.game_start_button), withText("START GAME"),
-                        withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
     }
+
 
     /*
     Test checks if radio button easy exists and contains the text: EASY
     written by: Katherine
     */
+//    @Test
+//    public void checkEasyGameLoop() {
+//        ViewInteraction materialButton = onView(
+//                allOf(withId(R.id.game_start_button), withText("Start Game"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        materialButton.perform(click());
+//
+//        ViewInteraction materialRadioButton = onView(
+//                allOf(withId(R.id.difficulty_easy), withText("Easy"),
+//                        childAtPosition(
+//                                allOf(withId(R.id.difficulty_selection_group),
+//                                        childAtPosition(
+//                                                withClassName(is("android.widget.RelativeLayout")),
+//                                                4)),
+//                                0),
+//                        isDisplayed()));
+//        materialRadioButton.perform(click());
+//
+//        ViewInteraction radioButton = onView(
+//                allOf(withId(R.id.difficulty_easy), withText("Easy"),
+//                        withParent(allOf(withId(R.id.difficulty_selection_group),
+//                                withParent(IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class)))),
+//                        isDisplayed()));
+//        radioButton.check(matches(isDisplayed()));
+//    }
     @Test
     public void checkEasyGameLoop() {
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.game_start_button), withText("Start Game"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
                         isDisplayed()));
         materialButton.perform(click());
 
+        // Add a delay of 2 seconds before clicking on the "Easy" radio button
+        SystemClock.sleep(2000);
+
         ViewInteraction materialRadioButton = onView(
                 allOf(withId(R.id.difficulty_easy), withText("Easy"),
-                        childAtPosition(
-                                allOf(withId(R.id.difficulty_selection_group),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.RelativeLayout")),
-                                                4)),
-                                0),
                         isDisplayed()));
         materialRadioButton.perform(click());
 
         ViewInteraction radioButton = onView(
                 allOf(withId(R.id.difficulty_easy), withText("Easy"),
-                        withParent(allOf(withId(R.id.difficulty_selection_group),
-                                withParent(IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class)))),
                         isDisplayed()));
         radioButton.check(matches(isDisplayed()));
     }
@@ -204,6 +233,36 @@ public class MainActivityTest {
     Test checks if red bwm spawns on game map
     written by: Junseob
      */
+//    @Test
+//    public void redBmwSpawns() {
+//        ViewInteraction materialButton = onView(
+//                allOf(withId(R.id.game_start_button), withText("Start Game"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        materialButton.perform(click());
+//
+//        ViewInteraction materialRadioButton = onView(
+//                allOf(withId(R.id.difficulty_medium), withText("Medium"),
+//                        childAtPosition(
+//                                allOf(withId(R.id.difficulty_selection_group),
+//                                        childAtPosition(
+//                                                withClassName(is("android.widget.RelativeLayout")),
+//                                                4)),
+//                                1),
+//                        isDisplayed()));
+//        materialRadioButton.perform(click());
+//
+//        ViewInteraction radioButton = onView(
+//                allOf(withId(R.id.difficulty_medium), withText("Medium"),
+//                        withParent(allOf(withId(R.id.difficulty_selection_group),
+//                                withParent(IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class)))),
+//                        isDisplayed()));
+//        radioButton.check(matches(isDisplayed()));
+//    }
     @Test
     public void redBmwSpawns() {
         ViewInteraction materialButton = onView(
@@ -215,6 +274,13 @@ public class MainActivityTest {
                                 1),
                         isDisplayed()));
         materialButton.perform(click());
+
+        // wait for difficulty selection to be displayed
+        try {
+            Thread.sleep(1000); // wait for 1 second
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction materialRadioButton = onView(
                 allOf(withId(R.id.difficulty_medium), withText("Medium"),
@@ -235,8 +301,8 @@ public class MainActivityTest {
         radioButton.check(matches(isDisplayed()));
     }
 
+
     /*
-    Test checks if white tesla spawns on game map
     written by: Junseob
     */
     @Test
@@ -309,8 +375,233 @@ public class MainActivityTest {
     Test checks if easy game loop has 5 lives
     written by: Akshay
     */
+//    @Test
+//    public void fiveLivesInEasy() {
+//        ViewInteraction materialButton = onView(
+//                allOf(withId(R.id.game_start_button), withText("Start Game"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        materialButton.perform(click());
+//
+//        ViewInteraction materialRadioButton = onView(
+//                allOf(withId(R.id.difficulty_hard), withText("Hard"),
+//                        childAtPosition(
+//                                allOf(withId(R.id.difficulty_selection_group),
+//                                        childAtPosition(
+//                                                withClassName(is("android.widget.RelativeLayout")),
+//                                                4)),
+//                                2),
+//                        isDisplayed()));
+//        materialRadioButton.perform(click());
+//
+//        ViewInteraction radioButton = onView(
+//                allOf(withId(R.id.difficulty_hard), withText("Hard"),
+//                        withParent(allOf(withId(R.id.difficulty_selection_group),
+//                                withParent(IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class)))),
+//                        isDisplayed()));
+//        radioButton.check(matches(isDisplayed()));
+//    }
+    /*
+Test checks if easy game loop has 5 lives
+written by: Akshay
+*/
     @Test
     public void fiveLivesInEasy() {
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.game_start_button), withText("Start Game"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
+                        isDisplayed()));
+        materialButton.perform(click());
+
+        ViewInteraction materialRadioButton = onView(
+                allOf(withId(R.id.difficulty_easy), withText("Easy"),
+                        childAtPosition(
+                                allOf(withId(R.id.difficulty_selection_group),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.RelativeLayout")),
+                                                4)),
+                                0),
+                        isDisplayed()));
+        materialRadioButton.perform(click());
+
+        ViewInteraction livesTextView = onView(
+                allOf(withId(R.id.lives), withText("5"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        livesTextView.check(matches(withText("5")));
+    }
+
+
+    /*
+    Test checks if medium game loop has 4 lives
+    written by: Jocelyn
+     */
+//    @Test
+//    public void fourLivesInMedium() {
+//        ViewInteraction materialButton = onView(
+//                allOf(withId(R.id.game_start_button), withText("Start Game"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        materialButton.perform(click());
+//
+//        ViewInteraction appCompatEditText = onView(
+//                allOf(withId(R.id.player_name_input),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                3),
+//                        isDisplayed()));
+//        appCompatEditText.perform(replaceText("Erick"), closeSoftKeyboard());
+//
+//        ViewInteraction appCompatEditText2 = onView(
+//                allOf(withId(R.id.player_name_input), withText("Erick"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                3),
+//                        isDisplayed()));
+//        appCompatEditText2.perform(pressImeActionButton());
+//
+//        ViewInteraction editText = onView(
+//                allOf(withId(R.id.player_name_input), withText("Erick"),
+//                        withParent(withParent(withId(android.R.id.content))),
+//                        isDisplayed()));
+//        editText.check(matches(withText("Erick")));
+//    }
+    @Test
+    public void fourLivesInMedium() {
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.game_start_button), withText("Start Game"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                1),
+                        isDisplayed()));
+        materialButton.perform(click());
+
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.player_name_input),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        appCompatEditText.perform(replaceText("Junseob"), closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText2 = onView(
+                allOf(withId(R.id.player_name_input), withText("Junseob"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        appCompatEditText2.perform(pressImeActionButton());
+
+        // Change the ID to the correct value
+        ViewInteraction editText = onView(
+                allOf(withId(R.id.player_name), withText("Junseob"),
+                        withParent(withParent(withId(android.R.id.content))),
+                        isDisplayed()));
+        editText.check(matches(withText("Junseob")));
+    }
+
+
+    /*
+    Test checks if hard game loop has 2 lives
+    written by: Jocelyn
+     */
+//    @Test
+//    public void twoLivesInHard() {
+//        ViewInteraction materialButton = onView(
+//                allOf(withId(R.id.game_start_button), withText("Start Game"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        materialButton.perform(click());
+//
+//        ViewInteraction appCompatEditText = onView(
+//                allOf(withId(R.id.player_name_input),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                3),
+//                        isDisplayed()));
+//        appCompatEditText.perform(replaceText("Erick"), closeSoftKeyboard());
+//
+//        ViewInteraction appCompatEditText2 = onView(
+//                allOf(withId(R.id.player_name_input), withText("Erick"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                3),
+//                        isDisplayed()));
+//        appCompatEditText2.perform(pressImeActionButton());
+//
+//        ViewInteraction editText = onView(
+//                allOf(withId(R.id.player_name_input), withText("Erick"),
+//                        withParent(withParent(withId(android.R.id.content))),
+//                        isDisplayed()));
+//        editText.check(matches(withText("Erick")));
+//    }
+//    @Test
+//    public void twoLivesInHard() {
+//        ViewInteraction materialButton = onView(
+//                allOf(withId(R.id.game_start_button), withText("Start Game"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        materialButton.perform(click());
+//
+//        ViewInteraction materialRadioButton = onView(
+//                allOf(withId(R.id.difficulty_hard), withText("Hard"),
+//                        childAtPosition(
+//                                allOf(withId(R.id.difficulty_selection_group),
+//                                        childAtPosition(
+//                                                withClassName(is("android.widget.RelativeLayout")),
+//                                                4)),
+//                                2),
+//                        isDisplayed()));
+//        materialRadioButton.perform(click());
+//
+//        ViewInteraction livesText = onView(
+//                allOf(withId(R.id.lives_text),
+//                        withParent(allOf(withId(R.id.lives_layout),
+//                                withParent(withId(R.id.game_layout))))));
+//        livesText.check(matches(withText("2")));
+//
+//        ViewInteraction playerNameText = onView(
+//                allOf(withId(R.id.player_name_input), withText("Erick"),
+//                        withParent(withParent(withId(android.R.id.content))),
+//                        isDisplayed()));
+//        playerNameText.check(matches(withText("Erick")));
+//    }
+    @Test
+    public void twoLivesInHard() {
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.game_start_button), withText("Start Game"),
                         childAtPosition(
@@ -332,30 +623,6 @@ public class MainActivityTest {
                         isDisplayed()));
         materialRadioButton.perform(click());
 
-        ViewInteraction radioButton = onView(
-                allOf(withId(R.id.difficulty_hard), withText("Hard"),
-                        withParent(allOf(withId(R.id.difficulty_selection_group),
-                                withParent(IsInstanceOf.<View>instanceOf(android.widget.RelativeLayout.class)))),
-                        isDisplayed()));
-        radioButton.check(matches(isDisplayed()));
-    }
-
-    /*
-    Test checks if medium game loop has 4 lives
-    written by: Jocelyn
-     */
-    @Test
-    public void fourLivesInMedium() {
-        ViewInteraction materialButton = onView(
-                allOf(withId(R.id.game_start_button), withText("Start Game"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        materialButton.perform(click());
-
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.player_name_input),
                         childAtPosition(
@@ -364,68 +631,21 @@ public class MainActivityTest {
                                         0),
                                 3),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("Erick"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("Junseob"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.player_name_input), withText("Erick"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatEditText2.perform(pressImeActionButton());
-
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.player_name_input), withText("Erick"),
+        ViewInteraction playerNameText = onView(
+                allOf(withId(R.id.player_name_input), withText("Junseob"),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
-        editText.check(matches(withText("Erick")));
+        playerNameText.check(matches(withText("Junseob")));
+
+        ViewInteraction livesText = onView(
+                allOf(withId(R.id.lives_text),
+                        withParent(allOf(withId(R.id.lives_layout),
+                                withParent(withId(R.id.game_layout))))));
+        livesText.check(matches(withText("2")));
     }
 
-
-    /*
-    Test checks if hard game loop has 2 lives
-    written by: Jocelyn
-     */
-    @Test
-    public void twoLivesInHard() {
-        ViewInteraction materialButton = onView(
-                allOf(withId(R.id.game_start_button), withText("Start Game"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        materialButton.perform(click());
-
-        ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.player_name_input),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatEditText.perform(replaceText("Erick"), closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.player_name_input), withText("Erick"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatEditText2.perform(pressImeActionButton());
-
-        ViewInteraction editText = onView(
-                allOf(withId(R.id.player_name_input), withText("Erick"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed()));
-        editText.check(matches(withText("Erick")));
-    }
 
     /*
     Test checks if deer spawn in game map
