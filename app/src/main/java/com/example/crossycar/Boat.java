@@ -2,6 +2,7 @@ package com.example.crossycar;
 
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
@@ -20,7 +21,7 @@ public class Boat {
         this.y = y;
         this.velocity = velocity;
     }
-    public void moveObject(ImageView view) {
+    public void moveObject(FrameLayout view) {
         Animation animation = new TranslateAnimation(x, -2200, 0, 0);
         int duration = 15000 - (velocity * 10);
         animation.setDuration(duration); // set the duration of the animation (in milliseconds)
