@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="lives" type="id" />
+    <item name="lives_text" type="id" />
+    <item name="lives_layout" type="id" />
+    <item name="game_layout" type="id" />
+</resources>
