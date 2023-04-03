@@ -5,7 +5,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
 
-public class Cow {
+public class Cow extends PlayerInteractions {
     private int x;
     private int y;
     //private int width, height;

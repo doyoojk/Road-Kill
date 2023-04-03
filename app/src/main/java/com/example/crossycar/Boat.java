@@ -44,6 +44,4 @@ public class Boat {
     public int getVelocity() {
         return velocity;
     }
-
-
 }
