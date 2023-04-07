@@ -1,53 +1,70 @@
 package com.example.crossycar;
 
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.widget.ImageView;
 
 
-public class Cow extends PlayerInteractions {
-    private int x;
-    private int y;
+public class Cow implements grassObject {
+    private float x;
+    private float y;
     //private int width, height;
     private int velocity;
-    private int direction;
-    private int toX;
+//    private int direction;
+//    private int toX;
 
 
     //private String name;
 
-    public Cow(int x, int y, int velocity, int direction) {
+    public Cow(float x, float y, int velocity) {
         this.x = x;
         this.y = y;
         this.velocity = velocity;
-        this.direction = direction;
-        if (direction == 0) {
-            this.toX = -2200;
-        }
-        if (direction == 1) {
-            this.toX = 2200;
-        }
+//        this.direction = direction;
+//        if (direction == 0) {
+//            this.toX = -2200;
+//        }
+//        if (direction == 1) {
+//            this.toX = 2200;
+//        }
     }
-    public void moveObject(ImageView view) {
-        Animation animation = new TranslateAnimation(x, toX, 0, 0);
-        int duration = 11000 - (velocity * 10);
+    @Override
+    public void moveObject(ImageView view, int screenW, int delayDist) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "x", screenW + delayDist, -2200);
+        animator.setDuration(15000 - (velocity * 10)); // set the duration of the animation (in milliseconds)
+        animator.setRepeatCount(ValueAnimator.INFINITE); // set the animation to repeat indefinitely
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Update the x-position of the view to match the object
+                view.setX(getX());
+                view.setY(getY());
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // When the animation ends, set the x-position of the object to the original position
+                setX(screenW + delayDist);
+                // Update the x-position of the view to match the object
+                view.setX(getX());
+                view.setY(getY());
+            }
+        });
+        animator.start(); // start the animation
+        setX(screenW + delayDist); // set the initial x-position of the object
+        setY(getY());
+        view.setX(getX()); // set the x-position of the view to match the object
+        view.setY(getY()); // set the y-position of the view to match the object
+    }
 
-        animation.setDuration(duration); // set the duration of the animation (in milliseconds)
-        animation.setRepeatCount(Animation.INFINITE); // set the animation to repeat indefinitely
-        view.startAnimation(animation); // apply the animation to the view
-    }
-
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
-    public void setX(int x) {
-        x = x;
-    }
-    public void setY(int y) {
-        y = x;
+    public float getX() {return x;}
+    public float getY() {return y;}
+    public void setX(float x) {this.x = x;}
+    public void setY(float y) {
+        this.y = y;
     }
     public int getVelocity() {
         return velocity;

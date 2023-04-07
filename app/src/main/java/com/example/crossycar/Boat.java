@@ -30,7 +30,7 @@ public class Boat implements riverObject{
     @Override
     public void moveObject(FrameLayout view, int screenW, int delayDist) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(this, "x", screenW + delayDist, -2200);
-        animator.setDuration(20000 - (velocity * 10)); // set the duration of the animation (in milliseconds)
+        animator.setDuration(15000 - (velocity * 10)); // set the duration of the animation (in milliseconds)
         animator.setRepeatCount(ValueAnimator.INFINITE); // set the animation to repeat indefinitely
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -65,15 +65,14 @@ public class Boat implements riverObject{
         return y;
     }
     public void setX(float x) {
-        x = x;
+        this.x = x;
     }
     public void setY(float y) {
-        y = x;
+        this.y = y;
     }
     public int getVelocity() {
         return velocity;
     }
-
     public int getLength() {
         return length;
     }

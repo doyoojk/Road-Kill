@@ -53,18 +53,52 @@ public class GameScreen extends AppCompatActivity {
     private int tileSize = 100; //before setting values
     private String[][] tileTypes = new String[20][10];
 
-    private Handler handler = new Handler();
     private Timer timer = new Timer();
     private GestureDetectorCompat gestureDetector;
     private int lives = 0;
     private List<riverObject> riverObjects = new ArrayList<>();
     private List<grassObject> grassObjects = new ArrayList<>();
 
+    private Handler handler = new Handler();
+    private int delay = 100; // 1 second delay
+    private boolean collisionDetected = false;
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!collisionDetected && grassCollision()) {
+                collisionDetected = true;
+                lives--;
+                score = 0;
+                scoreTextView.setText("Score: " + Integer.toString(score));
+                carPastY.clear();
+                if (lives > 0) {
+                    System.out.println("resetting car position");
+                    car.setX(tileSize * 5);
+                    car.setY(tileSize * 16);
+                    carX = tileSize * 5;
+                    carY = tileSize * 16;
+                    updateHeartIcon();
+                } else {
+                    Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
+                    gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
+                    startActivity(gameEndScreen);
+                }
+            } else if (collisionDetected && carY == 16 * tileSize) {
+                collisionDetected = false;
+            }
+            handler.postDelayed(this, delay);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
         makeGame();
+        startGrassCollisionLoop();
+    }
+    private void startGrassCollisionLoop() {
+        handler.postDelayed(runnable, delay);
     }
 
     //List to keep track of previous carY locations so score updates correctly
@@ -91,13 +125,16 @@ public class GameScreen extends AppCompatActivity {
                         setCarX(tileSize * 5);
                         setCarY(tileSize * 16);
                         updateHeartIcon();
+                    } else { //lives run up, end game
+                        Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
+                        gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
+                        startActivity(gameEndScreen);
                     }
                 } else {
                     score += 1;
                     carPastY.add(carY);
                 }
             }
-            //carPastY.add(carY);
             scoreTextView.setText("Score: " + Integer.toString(score));
         }
         car.setX(carX);
@@ -108,6 +145,17 @@ public class GameScreen extends AppCompatActivity {
             carY += tileSize;
             scoreTextView.setText("Score: " + Integer.toString(score));
         }
+        if (getTileType(carX, carY) == "river" && !isPlayerOnLogOrBoat()) {
+            lives -= 1;
+            score = 0;
+            carPastY.clear();
+            if (lives > 0) {
+                setCarX(tileSize * 5);
+                setCarY(tileSize * 16);
+                updateHeartIcon();
+            }
+        }
+
         car.setX(carX);
         car.setY(carY);
     }
@@ -146,34 +194,22 @@ public class GameScreen extends AppCompatActivity {
         }
     }
 
-//    public boolean isPlayerOnLogOrBoat() {
-//        //should fill out later
-//        return true;
-//    }
-
     private boolean isPlayerOnLogOrBoat() {
-        int carCenterX = carX * tileSize + tileSize / 2;
-        int carTopY = carY * tileSize;
-        int carBottomY = carTopY + tileSize;
         for (riverObject obj : riverObjects) {
             if (obj instanceof Log) {
                 Log log = (Log) obj;
-                float logLeftX = log.getX();
-                float logRightX = logLeftX + log.getLength() * tileSize;
-                float logTopY = log.getY();
-                float logBottomY = logTopY + tileSize;
-                System.out.println();
-                if (carTopY == logTopY && carCenterX >= logLeftX && carCenterX <= logRightX) {
+                float logX = log.getX();
+                float logY = log.getY();
+                float logLength = log.getLength() * tileSize;
+                if (carY == logY && carX >= logX && carX <= logX + logLength) {
                     return true;
                 }
             } else if (obj instanceof Boat) {
                 Boat boat = (Boat) obj;
-                float boatLeftX = boat.getX();
-                float boatRightX = boatLeftX + boat.getLength() * tileSize;
-                float boatTopY = boat.getY();
-                float boatBottomY = boatTopY + tileSize;
-                System.out.println();
-                if (carTopY == boatTopY && carCenterX >= boatLeftX && carCenterX <= boatRightX) {
+                float boatX = boat.getX();
+                float boatY = boat.getY();
+                float boatLength = boat.getLength() * tileSize;
+                if (carY == boatY && carX >= boatX && carX <= boatX + boatLength) {
                     return true;
                 }
             }
@@ -181,6 +217,26 @@ public class GameScreen extends AppCompatActivity {
         return false;
     }
 
+    private boolean grassCollision() {
+        for (grassObject obj : grassObjects) {
+            if (obj instanceof Deer) {
+                Deer deer = (Deer) obj;
+                float deerX = deer.getX();
+                float deerY = deer.getY();
+                if (carY == deerY && carX >= deerX && carX <= deerX + tileSize) {
+                    return true;
+                }
+            } else if (obj instanceof Cow) {
+                Cow cow = (Cow) obj;
+                float cowX = cow.getX();
+                float cowY = cow.getY();
+                if (carY == cowY && carX >= cowX && carX <= cowX + tileSize) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public int getCarY() {
         return carY;
@@ -347,14 +403,6 @@ public class GameScreen extends AppCompatActivity {
             }
         }
 
-        //        //testing for tileTypes
-        //        for (int i = 0; i < tileTypes.length; i++) {
-        //            for (int j = 0; j < tileTypes[i].length; j++) {
-        //                System.out.print(tileTypes[i][j] + i + j + " ");
-        //            }
-        //            System.out.println();
-        //        }
-
 
         // Add grid layout to root view
         RelativeLayout rootView = findViewById(R.id.root_view);
@@ -459,8 +507,6 @@ public class GameScreen extends AppCompatActivity {
                 //System.out.println("X: " + carX + " " + "Y: " + carY);
             }
         });
-
-
     }
 
     public void createObstacles(Random rand) {
@@ -471,32 +517,33 @@ public class GameScreen extends AppCompatActivity {
                 int vel = rand.nextInt(31);
                 int delayDist = rand.nextInt(500) + 10;
                 int start = screenW + delayDist;
-                int direction = 0;
-                if (row % 3 == 0) {
-                    start = -100 - delayDist;
-                    direction = 1;
-                }
-
+//                int direction = 0;
+//                if (row % 3 == 0) {
+//                    start = -100 - delayDist;
+//                    direction = 1;
+//                }
                 if (cowOrDeer == 0) {
-                    Deer deer1 = new Deer(start, row * tileSize, vel, direction);
+                    Deer deer1 = new Deer(start, row * tileSize, vel);
                     ImageView deer1view = new ImageView(this);
                     deer1view.setImageResource(R.drawable.deer);
                     deer1view.setY(deer1.getY());
                     deer1view.setX(deer1.getX());
                     deer1view.setLayoutParams(new RelativeLayout.LayoutParams(
                             tileSize, tileSize)); // set layout params to match tile size
-                    deer1.moveObject(deer1view);
+                    deer1.moveObject(deer1view, screenW, delayDist);
+                    grassObjects.add(deer1);
                     grassView.addView(deer1view);
                 } else {
                     // Create a new instance of the Cow class and pass in the grass coordinates
-                    Cow cow1 = new Cow(start, row * tileSize, vel, direction);
+                    Cow cow1 = new Cow(start, row * tileSize, vel);
                     ImageView cow1view = new ImageView(this);
                     cow1view.setImageResource(R.drawable.cow);
                     cow1view.setY(cow1.getY());
                     cow1view.setX(cow1.getX());
                     cow1view.setLayoutParams(new RelativeLayout.LayoutParams(
                             tileSize, tileSize)); // set layout params to match tile size
-                    cow1.moveObject(cow1view);
+                    cow1.moveObject(cow1view, screenW, delayDist);
+                    grassObjects.add(cow1);
                     grassView.addView(cow1view);
                 }
             } else if (tileTypes[row][0].equals("river")) { //creating boats and logs on river tiles
@@ -528,7 +575,6 @@ public class GameScreen extends AppCompatActivity {
                         riverView.addView(frameLayout, layoutParams);
                         log.moveObject(frameLayout, screenW, delayDist);
                         riverObjects.add(log);
-                        System.out.println(riverObjects);
                         objectCount += logLength;
                     } else { //creating boats
                         int boatLength = rand.nextInt(2) + 1; //generate random length of boat (1 or 2)
@@ -551,7 +597,6 @@ public class GameScreen extends AppCompatActivity {
                         riverView.addView(frameLayout, layoutParams);
                         boat.moveObject(frameLayout, screenW, delayDist);
                         riverObjects.add(boat);
-                        System.out.println(riverObjects);
                         objectCount += boatLength;
                     }
                 }
