@@ -6,7 +6,8 @@ import androidx.core.view.GestureDetectorCompat;
 import android.content.Intent;
 import android.graphics.Point;
 
-import android.media.Image;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -16,9 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -58,6 +57,8 @@ public class GameScreen extends AppCompatActivity {
     private Timer timer = new Timer();
     private GestureDetectorCompat gestureDetector;
     private int lives = 0;
+    private List<riverObject> riverObjects = new ArrayList<>();
+    private List<grassObject> grassObjects = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,14 +146,41 @@ public class GameScreen extends AppCompatActivity {
         }
     }
 
-    public boolean isPlayerOnLogOrBoat() {
-        //should fill out later
-        return true;
+//    public boolean isPlayerOnLogOrBoat() {
+//        //should fill out later
+//        return true;
+//    }
+
+    private boolean isPlayerOnLogOrBoat() {
+        int carCenterX = carX * tileSize + tileSize / 2;
+        int carTopY = carY * tileSize;
+        int carBottomY = carTopY + tileSize;
+        for (riverObject obj : riverObjects) {
+            if (obj instanceof Log) {
+                Log log = (Log) obj;
+                float logLeftX = log.getX();
+                float logRightX = logLeftX + log.getLength() * tileSize;
+                float logTopY = log.getY();
+                float logBottomY = logTopY + tileSize;
+                System.out.println();
+                if (carTopY == logTopY && carCenterX >= logLeftX && carCenterX <= logRightX) {
+                    return true;
+                }
+            } else if (obj instanceof Boat) {
+                Boat boat = (Boat) obj;
+                float boatLeftX = boat.getX();
+                float boatRightX = boatLeftX + boat.getLength() * tileSize;
+                float boatTopY = boat.getY();
+                float boatBottomY = boatTopY + tileSize;
+                System.out.println();
+                if (carTopY == boatTopY && carCenterX >= boatLeftX && carCenterX <= boatRightX) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public boolean isCollision(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
-        return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
-    }
 
     public int getCarY() {
         return carY;
@@ -482,13 +510,14 @@ public class GameScreen extends AppCompatActivity {
                         int logLength = rand.nextInt(3) + 4; //generate random length of logs
                         GridLayout logViews = new GridLayout(this);
                         logViews.setColumnCount(logLength);
-                        Log log = new Log(screenW + delayDist, row * tileSize, vel);
+                        Log log = new Log(screenW + delayDist, row * tileSize, vel, logLength);
                         for (int i = 0; i < logLength; i++) {
                             ImageView logView = new ImageView(this);
                             logView.setImageResource(R.drawable.logs);
                             logView.setLayoutParams(new GridLayout.LayoutParams(
                                     new ViewGroup.LayoutParams(tileSize, tileSize)));
                             logViews.addView(logView);
+                            //log.addLogView(logView);
                         }
                         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                                 logLength * tileSize, tileSize);
@@ -497,13 +526,15 @@ public class GameScreen extends AppCompatActivity {
                         FrameLayout frameLayout = new FrameLayout(this);
                         frameLayout.addView(logViews);
                         riverView.addView(frameLayout, layoutParams);
-                        log.moveObject(frameLayout);
+                        log.moveObject(frameLayout, screenW, delayDist);
+                        riverObjects.add(log);
+                        System.out.println(riverObjects);
                         objectCount += logLength;
                     } else { //creating boats
                         int boatLength = rand.nextInt(2) + 1; //generate random length of boat (1 or 2)
                         GridLayout boatViews = new GridLayout(this);
                         boatViews.setColumnCount(boatLength);
-                        Boat boat = new Boat(screenW + delayDist, row * tileSize, vel);
+                        Boat boat = new Boat(screenW + delayDist, row * tileSize, vel, boatLength);
                         for (int i = 0; i < boatLength; i++) {
                             ImageView boatView = new ImageView(this);
                             boatView.setImageResource(R.drawable.boat);
@@ -518,7 +549,9 @@ public class GameScreen extends AppCompatActivity {
                         FrameLayout frameLayout = new FrameLayout(this);
                         frameLayout.addView(boatViews);
                         riverView.addView(frameLayout, layoutParams);
-                        boat.moveObject(frameLayout);
+                        boat.moveObject(frameLayout, screenW, delayDist);
+                        riverObjects.add(boat);
+                        System.out.println(riverObjects);
                         objectCount += boatLength;
                     }
                 }
