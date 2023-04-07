@@ -23,7 +23,7 @@ public class Log implements riverObject{
 
     //private String name;
 
-    public Log(int x, int y, int velocity, int length) {
+    public Log(float x, float y, int velocity, int length) {
         this.x = x;
         this.y = y;
         this.velocity = velocity;
@@ -76,6 +76,5 @@ public class Log implements riverObject{
         return velocity;
     }
     public int getLength() { return length;}
-
 
 }
