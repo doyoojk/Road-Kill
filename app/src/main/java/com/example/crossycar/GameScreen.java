@@ -6,6 +6,7 @@ import androidx.core.view.GestureDetectorCompat;
 import android.content.Intent;
 import android.graphics.Point;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -13,8 +14,11 @@ import android.view.Display;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -44,8 +48,6 @@ public class GameScreen extends AppCompatActivity {
     private ImageView car;
     private int carY;
     private int carX;
-
-    private int vLevel = 0;
     private int hLevel = 5;
     private int screenW = 1125; //before setting values
     private int screenH = 2000; //before setting values
@@ -55,6 +57,7 @@ public class GameScreen extends AppCompatActivity {
     private Handler handler = new Handler();
     private Timer timer = new Timer();
     private GestureDetectorCompat gestureDetector;
+    private int lives = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,35 +69,42 @@ public class GameScreen extends AppCompatActivity {
     //List to keep track of previous carY locations so score updates correctly
     private List<Integer> carPastY = new ArrayList<Integer>();
     public void moveUp() {
-        if (vLevel < 15) {
+        if (carY > tileSize) {
             carY -= tileSize;
             //checking if the car makes it to the goal & sends it to the game end screen
-            if (getTileType(carX, carY) == "goal") {
+            if (getTileType(carX, carY) == "goal" || lives == 0) {
                 Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
                 gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
                 startActivity(gameEndScreen);
             }
             if (!carPastY.contains(carY)) {
-                score++;
-                carPastY.add(carY);
                 // The number of points gained from crossing different obstacles is different.
                 if (getTileType(carX, carY) == "grass") {
-                    score += 1;
-                } else if (getTileType(carX, carY) == "river") {
                     score += 2;
+                    carPastY.add(carY);
+                } else if (getTileType(carX, carY) == "river" && !isPlayerOnLogOrBoat()) {
+                    lives -= 1;
+                    score = 0;
+                    carPastY.clear();
+                    if (lives > 0) {
+                        setCarX(tileSize * 5);
+                        setCarY(tileSize * 16);
+                        updateHeartIcon();
+                    }
+                } else {
+                    score += 1;
+                    carPastY.add(carY);
                 }
             }
-            carPastY.add(carY);
-            vLevel++;
+            //carPastY.add(carY);
             scoreTextView.setText("Score: " + Integer.toString(score));
         }
         car.setX(carX);
         car.setY(carY);
     }
     public void moveDown() {
-        if (vLevel > 0) {
+        if (carY < tileSize * 16) {
             carY += tileSize;
-            vLevel--;
             scoreTextView.setText("Score: " + Integer.toString(score));
         }
         car.setX(carX);
@@ -122,6 +132,26 @@ public class GameScreen extends AppCompatActivity {
         int row = y / tileSize;
         int col = x / tileSize;
         return tileTypes[row][col];
+    }
+
+    public void updateHeartIcon() {
+        // Update the heart icon view
+        for (int i = 0; i < 5; i++) {
+            if (i < lives) {
+                heartIcons[i].setVisibility(ImageView.VISIBLE);
+            } else {
+                heartIcons[i].setVisibility(ImageView.GONE);
+            }
+        }
+    }
+
+    public boolean isPlayerOnLogOrBoat() {
+        //should fill out later
+        return true;
+    }
+
+    public boolean isCollision(int x1, int y1, int w1, int h1, int x2, int y2, int w2, int h2) {
+        return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
     }
 
     public int getCarY() {
@@ -346,10 +376,13 @@ public class GameScreen extends AppCompatActivity {
 
         // Show the appropriate number of heart icons based on the difficulty
         int heartCount = 5;
+        lives = 5;
         if (difficulty.equals("Medium")) {
             heartCount = 4;
+            lives = 4;
         } else if (difficulty.equals("Hard")) {
             heartCount = 2;
+            lives = 3;
         }
         for (int i = 0; i < heartCount; i++) {
             heartIcons[i].setVisibility(ImageView.VISIBLE);
@@ -439,29 +472,55 @@ public class GameScreen extends AppCompatActivity {
                     grassView.addView(cow1view);
                 }
             } else if (tileTypes[row][0].equals("river")) { //creating boats and logs on river tiles
-                int boatOrLog = rand.nextInt(2);
-                int vel = rand.nextInt(31);
+                int numObjects = rand.nextInt(4) + 2; //generate random number of objects for the row
+                int vel = Math.max(rand.nextInt(31), 0); // clamp velocity to non-negative value
                 int delayDist = rand.nextInt(500) + 10;
-                if (boatOrLog == 0) { //creating logs
-                    Log log1 = new Log(screenW + delayDist, row * tileSize, vel);
-                    ImageView log1view = new ImageView(this);
-                    log1view.setImageResource(R.drawable.logs);
-                    log1view.setY(log1.getY());
-                    log1view.setX(log1.getX());
-                    log1view.setLayoutParams(new RelativeLayout.LayoutParams(
-                            tileSize, tileSize)); // set layout params to match tile size
-                    log1.moveObject(log1view);
-                    riverView.addView(log1view);
-                } else { //creating boats
-                    Boat boat1 = new Boat(screenW + delayDist, row * tileSize, vel);
-                    ImageView boat1view = new ImageView(this);
-                    boat1view.setImageResource(R.drawable.boat);
-                    boat1view.setY(boat1.getY());
-                    boat1view.setX(boat1.getX());
-                    boat1view.setLayoutParams(new RelativeLayout.LayoutParams(
-                            tileSize, tileSize)); // set layout params to match tile size
-                    boat1.moveObject(boat1view);
-                    riverView.addView(boat1view);
+                int objectCount = 0;
+                while (objectCount < numObjects) {
+                    int boatOrLog = rand.nextInt(2);
+                    if (boatOrLog == 0) { //creating logs
+                        int logLength = rand.nextInt(3) + 4; //generate random length of logs
+                        GridLayout logViews = new GridLayout(this);
+                        logViews.setColumnCount(logLength);
+                        Log log = new Log(screenW + delayDist, row * tileSize, vel);
+                        for (int i = 0; i < logLength; i++) {
+                            ImageView logView = new ImageView(this);
+                            logView.setImageResource(R.drawable.logs);
+                            logView.setLayoutParams(new GridLayout.LayoutParams(
+                                    new ViewGroup.LayoutParams(tileSize, tileSize)));
+                            logViews.addView(logView);
+                        }
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                                logLength * tileSize, tileSize);
+                        layoutParams.leftMargin = delayDist;
+                        layoutParams.topMargin = row * tileSize;
+                        FrameLayout frameLayout = new FrameLayout(this);
+                        frameLayout.addView(logViews);
+                        riverView.addView(frameLayout, layoutParams);
+                        log.moveObject(frameLayout);
+                        objectCount += logLength;
+                    } else { //creating boats
+                        int boatLength = rand.nextInt(2) + 1; //generate random length of boat (1 or 2)
+                        GridLayout boatViews = new GridLayout(this);
+                        boatViews.setColumnCount(boatLength);
+                        Boat boat = new Boat(screenW + delayDist, row * tileSize, vel);
+                        for (int i = 0; i < boatLength; i++) {
+                            ImageView boatView = new ImageView(this);
+                            boatView.setImageResource(R.drawable.boat);
+                            boatView.setLayoutParams(new GridLayout.LayoutParams(
+                                    new ViewGroup.LayoutParams(tileSize, tileSize)));
+                            boatViews.addView(boatView);
+                        }
+                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                                boatLength * tileSize, tileSize);
+                        layoutParams.leftMargin = delayDist;
+                        layoutParams.topMargin = row * tileSize;
+                        FrameLayout frameLayout = new FrameLayout(this);
+                        frameLayout.addView(boatViews);
+                        riverView.addView(frameLayout, layoutParams);
+                        boat.moveObject(frameLayout);
+                        objectCount += boatLength;
+                    }
                 }
             }
         }
