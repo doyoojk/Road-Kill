@@ -72,11 +72,7 @@ public class GameScreen extends AppCompatActivity {
                 scoreTextView.setText("Score: " + Integer.toString(score));
                 carPastY.clear();
                 if (lives > 0) {
-                    System.out.println("resetting car position");
-                    car.setX(tileSize * 5);
-                    car.setY(tileSize * 16);
-                    carX = tileSize * 5;
-                    carY = tileSize * 16;
+                    resetCarPosition();
                     updateHeartIcon();
                 } else {
                     Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
@@ -126,8 +122,7 @@ public class GameScreen extends AppCompatActivity {
                     score = 0;
                     carPastY.clear();
                     if (lives > 0) {
-                        setCarX(tileSize * 5);
-                        setCarY(tileSize * 16);
+                        resetCarPosition();
                         updateHeartIcon();
                     } else { //lives run up, end game
                         Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
@@ -198,6 +193,12 @@ public class GameScreen extends AppCompatActivity {
         }
     }
 
+    public void resetCarPosition() {
+        car.setX(tileSize * 5);
+        car.setY(tileSize * 16);
+        carX = tileSize * 5;
+        carY = tileSize * 16;
+    }
     private boolean isPlayerOnLogOrBoat() {
         for (riverObject obj : riverObjects) {
             if (obj instanceof Log) {
