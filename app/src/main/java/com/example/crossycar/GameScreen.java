@@ -62,32 +62,72 @@ public class GameScreen extends AppCompatActivity {
     private Handler handler = new Handler();
     private int delay = 100; // 1 second delay
     private boolean collisionDetected = false;
+    private boolean gameRunning = false;
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (!collisionDetected && grassCollision()) {
-                collisionDetected = true;
-                lives--;
-                score = 0;
-                scoreTextView.setText("Score: " + Integer.toString(score));
-                carPastY.clear();
-                if (lives > 0) {
-                    System.out.println("resetting car position");
-                    car.setX(tileSize * 5);
-                    car.setY(tileSize * 16);
-                    carX = tileSize * 5;
-                    carY = tileSize * 16;
-                    updateHeartIcon();
-                } else {
-                    Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
-                    gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
-                    startActivity(gameEndScreen);
+            if (gameRunning) {
+                for (riverObject obj : riverObjects) { //log movement
+                    if (obj instanceof Log) {
+                        Log log = (Log) obj;
+                        log.setX(log.getX() - log.getVelocity());
+                        log.setY(log.getY());
+                        log.setViewX(log.getX());
+                        log.setViewY(log.getY());
+                        if (log.getX() < -2200) {
+                            log.setX(screenW + log.getDelayDist());
+                            log.setY(log.getY());
+                            log.setViewX(log.getX());
+                            log.setViewY(log.getY());
+                        }
+                    }
                 }
-            } else if (collisionDetected && carY == 16 * tileSize) {
-                collisionDetected = false;
+                if (isPlayerOnLogOrBoat()) {  //person is on a log
+                    Log log = logCoordinates();
+                    if (log != null) {
+                        float speed = log.getVelocity();
+                        float direction = -1;
+                        carX += speed * direction;
+                        car.setX(carX);
+                        if (carX < 0) { //out of bounds
+                            lives--;
+                            score = 0;
+                            scoreTextView.setText("Score: " + Integer.toString(score));
+                            carPastY.clear();
+                            if (lives > 0) {
+                                resetCarPosition();
+                                updateHeartIcon();
+                            } else if (gameRunning = true){
+                                Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
+                                gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
+                                startActivity(gameEndScreen);
+                                gameRunning = false;
+                            }
+                        }
+                    }
+                }
+                if (!collisionDetected && grassCollision()) {
+                    collisionDetected = true;
+                    lives--;
+                    score = 0;
+                    scoreTextView.setText("Score: " + Integer.toString(score));
+                    carPastY.clear();
+                    if (lives > 0) {
+                        resetCarPosition();
+                        updateHeartIcon();
+                    } else if (gameRunning = true){
+                        Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
+                        gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
+                        startActivity(gameEndScreen);
+                        gameRunning = false;
+                    }
+                } else if (collisionDetected && carY == 16 * tileSize) {
+                    collisionDetected = false;
+                }
+                handler.postDelayed(this, delay);
             }
-            handler.postDelayed(this, delay);
         }
+
     };
 
     @Override
@@ -95,9 +135,7 @@ public class GameScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
         makeGame();
-        startGrassCollisionLoop();
-    }
-    private void startGrassCollisionLoop() {
+        gameRunning = true;
         handler.postDelayed(runnable, delay);
     }
 
@@ -107,10 +145,11 @@ public class GameScreen extends AppCompatActivity {
         if (carY > tileSize) {
             carY -= tileSize;
             //checking if the car makes it to the goal & sends it to the game end screen
-            if (lives == 0) {
+            if (lives == 0 && gameRunning == true) {
                 Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
                 gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
                 startActivity(gameEndScreen);
+                gameRunning = false;
             } else if (getTileType(carX, carY) == "goal") {
                 Intent gameWinScreen = new Intent(GameScreen.this, GameWin.class);
                 gameWinScreen.putExtra("score", score); // Pass the current score to GameWin Class
@@ -126,8 +165,7 @@ public class GameScreen extends AppCompatActivity {
                     score = 0;
                     carPastY.clear();
                     if (lives > 0) {
-                        setCarX(tileSize * 5);
-                        setCarY(tileSize * 16);
+                        resetCarPosition();
                         updateHeartIcon();
                     } else { //lives run up, end game
                         Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
@@ -154,8 +192,7 @@ public class GameScreen extends AppCompatActivity {
             score = 0;
             carPastY.clear();
             if (lives > 0) {
-                setCarX(tileSize * 5);
-                setCarY(tileSize * 16);
+                resetCarPosition();
                 updateHeartIcon();
             }
         }
@@ -165,17 +202,17 @@ public class GameScreen extends AppCompatActivity {
     }
 
     public void moveLeft() {
-        if (hLevel > 0) {
-            carX -= tileSize - 4;
-            hLevel--;
+        int newX = carX - tileSize - 4;
+        if (newX > 0) {
+            carX = newX;
         }
         car.setX(carX);
         car.setY(carY);
     }
     public void moveRight() {
-        if (hLevel < 10) {
-            carX += tileSize - 4;
-            hLevel++;
+        int newX = carX + tileSize - 4;
+        if (newX < tileSize * 9) {
+            carX = newX;
         }
         car.setX(carX);
         car.setY(carY);
@@ -198,6 +235,35 @@ public class GameScreen extends AppCompatActivity {
         }
     }
 
+    public void resetCarPosition() {
+        car.setX(tileSize * 5);
+        car.setY(tileSize * 16);
+        carX = tileSize * 5;
+        carY = tileSize * 16;
+    }
+    private Log logCoordinates() {
+        for (riverObject obj : riverObjects) {
+            if (obj instanceof Log) {
+                Log log = (Log) obj;
+                float logX = log.getX();
+                float logY = log.getY();
+                float logLength = log.getLength() * tileSize;
+                if (carY == logY && carX >= logX && carX <= logX + logLength) {
+                    return log;
+                }
+            }
+//            } else if (obj instanceof Boat) {
+//                Boat boat = (Boat) obj;
+//                float boatX = boat.getX();
+//                float boatY = boat.getY();
+//                float boatLength = boat.getLength() * tileSize;
+//                if (carY == boatY && carX >= boatX && carX <= boatX + boatLength) {
+//                    return boat;
+//                }
+//            }
+        }
+        return null;
+    }
     private boolean isPlayerOnLogOrBoat() {
         for (riverObject obj : riverObjects) {
             if (obj instanceof Log) {
@@ -551,8 +617,8 @@ public class GameScreen extends AppCompatActivity {
                     grassView.addView(cow1view);
                 }
             } else if (tileTypes[row][0].equals("river")) { //creating boats and logs on river tiles
-                int numObjects = rand.nextInt(4) + 2; //generate random number of objects for the row
-                int vel = Math.max(rand.nextInt(31), 0); // clamp velocity to non-negative value
+                int numObjects = rand.nextInt(5) + 4; //generate random number of objects for the row
+                int vel = rand.nextInt(16) + 15;
                 int delayDist = rand.nextInt(500) + 10;
                 int objectCount = 0;
                 while (objectCount < numObjects) {
@@ -561,7 +627,7 @@ public class GameScreen extends AppCompatActivity {
                     int logLength = rand.nextInt(3) + 4; //generate random length of logs
                     GridLayout logViews = new GridLayout(this);
                     logViews.setColumnCount(logLength);
-                    Log log = new Log(screenW + delayDist, row * tileSize, vel, logLength);
+                    Log log = new Log(screenW + delayDist, row * tileSize, vel, logLength, delayDist);
                     for (int i = 0; i < logLength; i++) {
                         ImageView logView = new ImageView(this);
                         logView.setImageResource(R.drawable.logs);
@@ -577,7 +643,8 @@ public class GameScreen extends AppCompatActivity {
                     FrameLayout frameLayout = new FrameLayout(this);
                     frameLayout.addView(logViews);
                     riverView.addView(frameLayout, layoutParams);
-                    log.moveObject(frameLayout, screenW, delayDist);
+                    log.addView(frameLayout);
+//                    log.moveObject(screenW, delayDist);
                     riverObjects.add(log);
                     objectCount += logLength;
 //                    } else { //creating boats
