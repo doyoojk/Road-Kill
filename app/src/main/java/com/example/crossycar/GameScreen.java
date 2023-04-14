@@ -569,7 +569,6 @@ public class GameScreen extends AppCompatActivity {
                                 new ViewGroup.LayoutParams(tileSize, tileSize)));
                         logViews.addView(logView);
                         //log.addLogView(logView);
-                    }
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                             logLength * tileSize, tileSize);
                     layoutParams.leftMargin = delayDist;
