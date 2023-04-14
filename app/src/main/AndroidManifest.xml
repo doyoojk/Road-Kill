@@ -12,6 +12,7 @@
         android:theme="@style/Theme.Crossycar"
         tools:targetApi="31">
         <activity android:name=".GameEnd"/>
+        <activity android:name=".GameWin"/>
         <activity
             android:name=".GameScreen"
             android:exported="false" />
