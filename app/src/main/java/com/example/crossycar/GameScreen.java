@@ -107,10 +107,14 @@ public class GameScreen extends AppCompatActivity {
         if (carY > tileSize) {
             carY -= tileSize;
             //checking if the car makes it to the goal & sends it to the game end screen
-            if (getTileType(carX, carY) == "goal" || lives == 0) {
+            if (lives == 0) {
                 Intent gameEndScreen = new Intent(GameScreen.this, GameEnd.class);
                 gameEndScreen.putExtra("score", score); // Pass the current score to GameEnd Class
                 startActivity(gameEndScreen);
+            } else if (getTileType(carX, carY) == "goal") {
+                Intent gameWinScreen = new Intent(GameScreen.this, GameWin.class);
+                gameWinScreen.putExtra("score", score); // Pass the current score to GameWin Class
+                startActivity(gameWinScreen);
             }
             if (!carPastY.contains(carY)) {
                 // The number of points gained from crossing different obstacles is different.
@@ -552,53 +556,52 @@ public class GameScreen extends AppCompatActivity {
                 int delayDist = rand.nextInt(500) + 10;
                 int objectCount = 0;
                 while (objectCount < numObjects) {
-                    int boatOrLog = rand.nextInt(2);
-                    if (boatOrLog == 0) { //creating logs
-                        int logLength = rand.nextInt(3) + 4; //generate random length of logs
-                        GridLayout logViews = new GridLayout(this);
-                        logViews.setColumnCount(logLength);
-                        Log log = new Log(screenW + delayDist, row * tileSize, vel, logLength);
-                        for (int i = 0; i < logLength; i++) {
-                            ImageView logView = new ImageView(this);
-                            logView.setImageResource(R.drawable.logs);
-                            logView.setLayoutParams(new GridLayout.LayoutParams(
-                                    new ViewGroup.LayoutParams(tileSize, tileSize)));
-                            logViews.addView(logView);
-                            //log.addLogView(logView);
-                        }
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                                logLength * tileSize, tileSize);
-                        layoutParams.leftMargin = delayDist;
-                        layoutParams.topMargin = row * tileSize;
-                        FrameLayout frameLayout = new FrameLayout(this);
-                        frameLayout.addView(logViews);
-                        riverView.addView(frameLayout, layoutParams);
-                        log.moveObject(frameLayout, screenW, delayDist);
-                        riverObjects.add(log);
-                        objectCount += logLength;
-                    } else { //creating boats
-                        int boatLength = rand.nextInt(2) + 1; //generate random length of boat (1 or 2)
-                        GridLayout boatViews = new GridLayout(this);
-                        boatViews.setColumnCount(boatLength);
-                        Boat boat = new Boat(screenW + delayDist, row * tileSize, vel, boatLength);
-                        for (int i = 0; i < boatLength; i++) {
-                            ImageView boatView = new ImageView(this);
-                            boatView.setImageResource(R.drawable.boat);
-                            boatView.setLayoutParams(new GridLayout.LayoutParams(
-                                    new ViewGroup.LayoutParams(tileSize, tileSize)));
-                            boatViews.addView(boatView);
-                        }
-                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                                boatLength * tileSize, tileSize);
-                        layoutParams.leftMargin = delayDist;
-                        layoutParams.topMargin = row * tileSize;
-                        FrameLayout frameLayout = new FrameLayout(this);
-                        frameLayout.addView(boatViews);
-                        riverView.addView(frameLayout, layoutParams);
-                        boat.moveObject(frameLayout, screenW, delayDist);
-                        riverObjects.add(boat);
-                        objectCount += boatLength;
-                    }
+//                    int boatOrLog = rand.nextInt(2);
+//                    if (boatOrLog == 0) { //creating logs
+                    int logLength = rand.nextInt(3) + 4; //generate random length of logs
+                    GridLayout logViews = new GridLayout(this);
+                    logViews.setColumnCount(logLength);
+                    Log log = new Log(screenW + delayDist, row * tileSize, vel, logLength);
+                    for (int i = 0; i < logLength; i++) {
+                        ImageView logView = new ImageView(this);
+                        logView.setImageResource(R.drawable.logs);
+                        logView.setLayoutParams(new GridLayout.LayoutParams(
+                                new ViewGroup.LayoutParams(tileSize, tileSize)));
+                        logViews.addView(logView);
+                        //log.addLogView(logView);
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                            logLength * tileSize, tileSize);
+                    layoutParams.leftMargin = delayDist;
+                    layoutParams.topMargin = row * tileSize;
+                    FrameLayout frameLayout = new FrameLayout(this);
+                    frameLayout.addView(logViews);
+                    riverView.addView(frameLayout, layoutParams);
+                    log.moveObject(frameLayout, screenW, delayDist);
+                    riverObjects.add(log);
+                    objectCount += logLength;
+//                    } else { //creating boats
+//                        int boatLength = rand.nextInt(2) + 1; //generate random length of boat (1 or 2)
+//                        GridLayout boatViews = new GridLayout(this);
+//                        boatViews.setColumnCount(boatLength);
+//                        Boat boat = new Boat(screenW + delayDist, row * tileSize, vel, boatLength);
+//                        for (int i = 0; i < boatLength; i++) {
+//                            ImageView boatView = new ImageView(this);
+//                            boatView.setImageResource(R.drawable.boat);
+//                            boatView.setLayoutParams(new GridLayout.LayoutParams(
+//                                    new ViewGroup.LayoutParams(tileSize, tileSize)));
+//                            boatViews.addView(boatView);
+//                        }
+//                        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+//                                boatLength * tileSize, tileSize);
+//                        layoutParams.leftMargin = delayDist;
+//                        layoutParams.topMargin = row * tileSize;
+//                        FrameLayout frameLayout = new FrameLayout(this);
+//                        frameLayout.addView(boatViews);
+//                        riverView.addView(frameLayout, layoutParams);
+//                        boat.moveObject(frameLayout, screenW, delayDist);
+//                        riverObjects.add(boat);
+//                        objectCount += boatLength;
+//                    }
                 }
             }
         }
