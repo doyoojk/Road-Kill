@@ -1,7 +1,5 @@
 package com.example.crossycar;
 
-import android.widget.FrameLayout;
-
-public interface riverObject {
+public interface RiverObject {
     void moveObject(int screenW, int delayDist);
 }

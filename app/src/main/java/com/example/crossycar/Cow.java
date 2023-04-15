@@ -7,13 +7,11 @@ import android.animation.ValueAnimator;
 import android.widget.ImageView;
 
 
-public class Cow implements grassObject {
+public class Cow implements GrassObject {
     private float x;
     private float y;
     //private int width, height;
     private int velocity;
-//    private int direction;
-//    private int toX;
 
 
     //private String name;
@@ -22,19 +20,14 @@ public class Cow implements grassObject {
         this.x = x;
         this.y = y;
         this.velocity = velocity;
-//        this.direction = direction;
-//        if (direction == 0) {
-//            this.toX = -2200;
-//        }
-//        if (direction == 1) {
-//            this.toX = 2200;
-//        }
     }
     @Override
     public void moveObject(ImageView view, int screenW, int delayDist) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(this, "x", screenW + delayDist, -2200);
-        animator.setDuration(15000 - (velocity * 10)); // set the duration of the animation (in milliseconds)
-        animator.setRepeatCount(ValueAnimator.INFINITE); // set the animation to repeat indefinitely
+        animator.setDuration(15000 - (velocity * 10));
+        // set the duration of the animation (in milliseconds)
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        // set the animation to repeat indefinitely
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -46,7 +39,8 @@ public class Cow implements grassObject {
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                // When the animation ends, set the x-position of the object to the original position
+                // When the animation ends, set the
+                // x-position of the object to the original position
                 setX(screenW + delayDist);
                 // Update the x-position of the view to match the object
                 view.setX(getX());
@@ -60,9 +54,15 @@ public class Cow implements grassObject {
         view.setY(getY()); // set the y-position of the view to match the object
     }
 
-    public float getX() {return x;}
-    public float getY() {return y;}
-    public void setX(float x) {this.x = x;}
+    public float getX() {
+        return x;
+    }
+    public float getY() {
+        return y;
+    }
+    public void setX(float x) {
+        this.x = x;
+    }
     public void setY(float y) {
         this.y = y;
     }

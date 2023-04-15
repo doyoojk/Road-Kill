@@ -4,14 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+//import android.view.animation.Animation;
+//import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+//import android.widget.ImageView;
 
 
 
-public class Boat implements riverObject{
+public class Boat implements RiverObject {
     private float x;
     private float y;
     //private int width, height;
@@ -34,8 +34,10 @@ public class Boat implements riverObject{
     @Override
     public void moveObject(int screenW, int delayDist) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(this, "x", screenW + delayDist, -2200);
-        animator.setDuration(15000 - (velocity * 10)); // set the duration of the animation (in milliseconds)
-        animator.setRepeatCount(ValueAnimator.INFINITE); // set the animation to repeat indefinitely
+        animator.setDuration(15000 - (velocity * 10));
+        // set the duration of the animation (in milliseconds)
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        // set the animation to repeat indefinitely
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -47,7 +49,8 @@ public class Boat implements riverObject{
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                // When the animation ends, set the x-position of the object to the original position
+                // When the animation ends, set the x-position
+                // of the object to the original position
                 setX(screenW + delayDist);
                 // Update the x-position of the view to match the object
                 view.setX(getX());
